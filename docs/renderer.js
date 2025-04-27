@@ -1,7 +1,7 @@
 // src/renderer/renderer.js
 
-import { mapillaryService, REGION_BBOXES } from '../services/mapillary.js';
-import { gameLogic                           } from '../services/game-logic.js';
+import { mapillaryService, REGION_BBOXES } from './services/mapillary.js';
+import { gameLogic                           } from './services/game-logic.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const menuScreen    = document.getElementById('menu-screen');
