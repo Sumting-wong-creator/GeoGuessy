@@ -1,0 +1,244 @@
+/* src/renderer/styles.css */
+
+/* ─── LAYOUT FIXES (MUST BE FIRST) ───────────────────────────────────────────── */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+#game-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.game-view {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0; /* critical in flex so children can stretch */
+}
+
+/* ─── MAPILLARY VIEWER ───────────────────────────────────────────────────────── */
+#mapillary-viewer {
+  position: absolute;
+  top:    0;
+  right:  0;
+  bottom: 0;
+  left:   0;
+}
+
+/* ─── HIDE / SHOW ─────────────────────────────────────────────────────────────── */
+.hidden {
+  display: none !important;
+}
+
+/* ─── VARIABLES ───────────────────────────────────────────────────────────────── */
+:root {
+  --blue:        #007bff;
+  --blue-75:     rgba(0,123,255,0.75);
+  --light-bg:    #ffffff;
+  --dark-bg:     #1e1e1e;
+  --text-light:  #ffffff;
+  --text-dark:   #000000;
+  --transition:  0.3s ease;
+}
+
+/* ─── BASE ───────────────────────────────────────────────────────────────────── */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--light-bg);
+  color: var(--text-dark);
+  transition: background var(--transition), color var(--transition);
+}
+body.dark-mode {
+  background: var(--dark-bg);
+  color: var(--text-light);
+}
+
+/* ─── MENU SCREEN ────────────────────────────────────────────────────────────── */
+.menu-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--light-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  z-index: 1000;
+}
+.menu-title {
+  font-size: 3rem;
+  margin: 0;
+}
+.menu-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.menu-controls select {
+  padding: 0.75rem;
+  font-size: 1.1rem;
+}
+
+/* ─── GAME HEADER ─────────────────────────────────────────────────────────────── */
+.game-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--light-bg);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 200;
+  transition: background var(--transition);
+}
+body.dark-mode .game-header {
+  background: var(--dark-bg);
+}
+.game-header .title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.status, .timer {
+  font-size: 1rem;
+}
+.timer {
+  margin-left: auto;
+}
+
+/* ─── MAIN GAME VIEW ─────────────────────────────────────────────────────────── */
+.game-view {
+  background: #000;
+}
+
+/* ─── LOADING OVERLAY ────────────────────────────────────────────────────────── */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.2rem;
+  z-index: 100;
+}
+.loading-overlay.hidden {
+  display: none;
+}
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid rgba(0,123,255,0.25);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 0.5rem;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── MAP + CONTROLS WRAPPER ─────────────────────────────────────────────────── */
+.map-controls-wrapper {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  width: 507px;       /* 30% wider than original 390px */
+  height: 390px;      /* original height */
+  transform-origin: bottom right;
+  transition: transform var(--transition);
+  z-index: 150;
+}
+.map-controls-wrapper:hover {
+  transform: scale(1.8); /* 80% larger on hover */
+  z-index: 200;
+}
+
+/* ─── LEAFLET MINI-MAP ───────────────────────────────────────────────────────── */
+.leaflet-map {
+  width: 100%;
+  height: 100%;
+  opacity: 0.3;                                 /* default low opacity */
+  transition: opacity var(--transition);
+  border-radius: 8px;                           /* rounded corners */
+  overflow: hidden;                             /* clip edges */
+}
+/* On hover of the wrapper, only the map’s opacity changes */
+.map-controls-wrapper:hover .leaflet-map {
+  opacity: 0.9;                                 /* high opacity on hover */
+}
+
+/* ─── CONTROLS ───────────────────────────────────────────────────────────────── */
+.controls {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 201; /* above the map */
+}
+
+/* ─── BUTTONS ───────────────────────────────────────────────────────────────── */
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn-primary {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+}
+.btn-secondary {
+  background: #6c757d;
+  color: #fff;
+  border: none;
+}
+.btn-guess {
+  background: var(--blue-75);
+  color: #fff;
+  border: none;
+}
+.btn-next {
+  background: #28a745;
+  color: #fff;
+  border: none;
+}
+
+/* ─── ENDGAME OVERLAY ────────────────────────────────────────────────────────── */
+.endgame-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 250;
+}
+.endgame-overlay.hidden {
+  display: none;
+}
+
+/* ─── MODAL ───────────────────────────────────────────────────────────────────── */
+.modal {
+  background: var(--light-bg);
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  transition: background var(--transition), color var(--transition);
+}
+body.dark-mode .modal {
+  background: var(--dark-bg);
+  color: var(--text-light);
+}
