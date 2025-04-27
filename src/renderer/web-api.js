@@ -1,9 +1,9 @@
 // web-api.js
-// If we’re in a normal browser (no Electron), stub out window.api.electron:
+console.log('🪐 web-api.js stub loaded', window.api);
 if (!window.api) window.api = {};
 window.api.electron = {
-  getSettings:  async () => ({ zoomLevel: 2, enable360View: false }),
-  saveSettings: async (s) => true,
-  startGame:    async () => ({ currentRound: 0, score: 0 }),
-  endGame:      async (score) => ({ currentRound: null, score }),
+  getSettings: async () => ({ zoomLevel: 2, enable360View: false }),
+  saveSettings: async () => true,
+  startGame: async () => { console.log('🪐 fake startGame called'); return { currentRound:0, score:0 }; },
+  endGame: async () => ({ score:0 }),
 };
