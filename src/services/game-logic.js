@@ -55,6 +55,14 @@ class GameLogic {
    * 2) Subtract (distance × pts/m) from region base
    * 3) Clamp ≥ 0, round, accumulate
    */
+
+  async initialize() {
+    if (window.api?.electron?.startGame) {
+      await window.api.electron.startGame();
+    }
+  }
+
+
   async makeGuess(guess) {
     if (!this.currentLocation || !guess) {
       return { distance: null, points: 0, score: this.score };
