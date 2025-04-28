@@ -1,44 +1,45 @@
 /* phonestyles.css
    =============================================================================
    Phone Mode Overrides for iPhone Landscape (max-device-width: 812px)
-   • Map wrapper height reduced by 40%
-   • Map wrapper width increased by 25px (from 150px to 188px)
-   • Fixed-position FABs, safe-area inset, polished UI
+   • Full overrides for menus, FABs, and mini-map
+   • Mini-map wrapper now 240px wide × 140px tall (absolute pixels)
+   • Fixed to viewport bottom-right, safe-area aware
+   • Polished backdrop-blur, shadows, hover effects, responsive fonts
    ============================================================================= */
 
 /* ─── GLOBAL VARIABLES & SAFE-AREA ───────────────────────────────────────────── */
 :root {
-  /* bottom safe-area inset (home indicator) */
+  /* Safe-area inset at bottom (home-indicator) */
   --safe-inset-bottom:    env(safe-area-inset-bottom, 1rem);
 
-  /* spacing */
+  /* Spacing */
   --gap-md:               1rem;
   --gap-sm:               0.75rem;
 
-  /* font scales */
+  /* Font scales */
   --font-title:           2.5rem;
-  --font-fab:             1rem;
   --font-header:          1.3rem;
   --font-status:          0.9rem;
+  --font-fab:             1rem;
 
-  /* FAB dimensions */
+  /* FAB (floating action button) */
   --fab-size:             3.5rem;
   --fab-radius:           50%;
-  --fab-shadow-light:     0 4px 12px rgba(0,0,0,0.3);
+  --fab-shadow:           0 4px 12px rgba(0,0,0,0.3);
 
-  /* map wrapper — NEW absolute dimensions */
-  --map-width:            188px;   /* was 150px, now +25% => 150px ×1.25 */
-  --map-height:           195px;   /* was 325px, now −40% => 325px ×0.6 */
+  /* Mini-map wrapper dimensions */
+  --map-width:            240px;
+  --map-height:           140px;
 
-  /* map wrapper offsets */
+  /* Map wrapper offsets */
   --map-offset-x:         20px;
   --map-offset-y:         calc(20px + var(--safe-inset-bottom));
 
-  /* transition timing */
-  --trans-fast:           0.2s ease-in-out;
+  /* Transition speed */
+  --transition-fast:      0.2s ease-in-out;
 }
 
-/* ─── PHONE-LANDSCAPE MEDIA QUERY ───────────────────────────────────────────── */
+/* ─── APPLY ONLY ON PHONE LANDSCAPE ─────────────────────────────────────────── */
 @media only screen 
   and (max-device-width: 812px) 
   and (orientation: landscape) {
@@ -48,21 +49,18 @@
     padding-bottom: var(--safe-inset-bottom) !important;
   }
 
-  /* ── HIDE INLINE CONTROLS ─────────────────────────────────────────────────── */
-  .controls {
-    display: none !important;
-  }
-
-  /* ── MENU SCREEN ─────────────────────────────────────────────────────────── */
+  /* ── MENU SCREEN RE-FLOW & STYLING ───────────────────────────────────────── */
   .menu-screen {
+    display: flex !important;
     flex-direction: row !important;
     justify-content: space-between !important;
     align-items: center !important;
     padding: var(--gap-md) !important;
+    gap: var(--gap-md) !important;
     backdrop-filter: blur(8px) !important;
     background: rgba(255,255,255,0.85) !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
-    gap: var(--gap-md) !important;
+    z-index: 1000 !important;
   }
   .menu-title {
     flex: 1 0 auto !important;
@@ -71,6 +69,7 @@
     margin: 0 !important;
   }
   .menu-controls {
+    display: flex !important;
     flex-direction: column !important;
     gap: var(--gap-sm) !important;
     align-items: center !important;
@@ -81,7 +80,7 @@
     min-width: 6rem !important;
   }
 
-  /* ── FIXED FAB BUTTONS ───────────────────────────────────────────────────── */
+  /* ── FLOATING ACTION BUTTONS (FABs) ──────────────────────────────────────── */
   #guess-btn,
   #phone-mode-btn {
     position: fixed !important;
@@ -90,14 +89,14 @@
     font-size: var(--font-fab) !important;
     background: var(--blue) !important;
     color: #fff !important;
-    box-shadow: var(--fab-shadow-light) !important;
     border: none !important;
     border-radius: var(--fab-radius) !important;
+    box-shadow: var(--fab-shadow) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     cursor: pointer !important;
-    transition: transform var(--trans-fast), box-shadow var(--trans-fast) !important;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast) !important;
     z-index: 1000 !important;
   }
   #guess-btn {
@@ -118,7 +117,7 @@
     transform: translateY(-2px) scale(0.98) !important;
   }
 
-  /* ── FIXED MAP WRAPPER (BOTTOM-RIGHT) ───────────────────────────────────── */
+  /* ── MINI-MAP WRAPPER FIXED BOTTOM-RIGHT ─────────────────────────────────── */
   .map-controls-wrapper {
     position: fixed !important;
     right: var(--map-offset-x) !important;
@@ -127,27 +126,27 @@
     height: var(--map-height) !important;
     border-radius: 0.75rem !important;
     overflow: hidden !important;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
     backdrop-filter: blur(4px) !important;
-    z-index: 900 !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
     transform: none !important;
+    z-index: 900 !important;
   }
   .map-controls-wrapper:hover {
     transform: none !important;
   }
 
-  /* ── MINI-MAP FIXED WIDTH ────────────────────────────────────────────────── */
+  /* ── LEAFLET MINI-MAP FULL WRAPPER FILL ──────────────────────────────────── */
   .leaflet-map {
-    width: 100% !important;   /* fills the new 188px wrapper */
+    width: 100% !important;
     height: 100% !important;
-    transition: transform var(--trans-fast) !important;
+    transition: transform var(--transition-fast) !important;
   }
   .leaflet-map:hover {
     transform: scale(1.05) !important;
     transform-origin: center center !important;
   }
 
-  /* ── GAME HEADER & STATUS ────────────────────────────────────────────────── */
+  /* ── GAME HEADER & STATUS ADJUSTMENTS ───────────────────────────────────── */
   .game-header {
     backdrop-filter: blur(6px) !important;
     padding: 0.5rem var(--gap-md) !important;
@@ -172,7 +171,7 @@
     border-width: 4px !important;
   }
 
-  /* ── MODAL (GAME OVER) ───────────────────────────────────────────────────── */
+  /* ── GAME OVER MODAL ─────────────────────────────────────────────────────── */
   .modal {
     padding: 1.5rem !important;
     border-radius: 0.75rem !important;
