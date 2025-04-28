@@ -1,66 +1,32 @@
 /* phonestyles.css
    =============================================================================
-   Phone Mode — Mobile-First Responsive Overrides
-   • Fluid, safe-area aware, works on all phones
-   • Portrait & landscape tweaks via orientation media queries
-   • Floating Action Buttons (FABs) for Guess & Phone-Mode
-   • Mini-map wrapper sized with viewport units for consistency
+   “Phone Mode” Overrides — mobile‐first, loaded only when toggled on
+   • Unconditionally applies whenever this stylesheet is enabled
+   • Pixel‐perfect sizing for mini‐map in bottom right
+   • Floating “Guess” & “Phone Mode” buttons
+   • Ensures .hidden works on the main menu
    ============================================================================= */
 
-/* ─── VARIABLES & FLUID BASE ───────────────────────────────────────────────── */
+/* ─── SAFE-AREA ─────────────────────────────────────────────────────────────── */
 :root {
-  /* safe-area inset (home bar) */
   --safe-bottom: env(safe-area-inset-bottom, 1rem);
-
-  /* spacing */
-  --gap: 1rem;
-  --gap-sm: 0.75rem;
-
-  /* FAB */
-  --fab-size: 3.2rem;
-  --fab-radius: 50%;
-  --fab-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-
-  /* map wrapper (landscape default) */
-  --map-w-land: 30vw;
-  --map-h-land: 20vh;
-
-  /* map wrapper (portrait default) */
-  --map-w-port: 50vw;
-  --map-h-port: 30vh;
-
-  /* fonts */
-  --font-base-min: 1rem;
-  --font-base-max: 1.2rem;
 }
 
-/* fluid typography */
-html {
-  font-size: clamp(var(--font-base-min), 4vw, var(--font-base-max));
-}
-
-/* ─── PHONE MODE GLOBAL ────────────────────────────────────────────────────── */
-body {
-  /* ensure bottom safe-area is respected */
-  padding-bottom: var(--safe-bottom) !important;
-}
-
-/* hide in-map Guess/Next controls in phone mode */
-.controls {
-  display: none !important;
-}
-
-/* ─── MENU RE-FLOW ─────────────────────────────────────────────────────────── */
+/* ─── MAIN MENU OVERLAY ────────────────────────────────────────────────────── */
 .menu-screen {
+  position: fixed !important;
+  top: 0; left: 0; right: 0; bottom: 0 !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
-  gap: var(--gap) !important;
-  padding: var(--gap) !important;
+  justify-content: center !important;
+  padding: 1rem !important;
+  background: rgba(255,255,255,0.95) !important;
   backdrop-filter: blur(8px) !important;
-  background: rgba(255, 255, 255, 0.85) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
   z-index: 1000 !important;
+}
+.menu-screen.hidden {
+  display: none !important;
 }
 .menu-title {
   font-size: 2.5rem !important;
@@ -70,7 +36,7 @@ body {
 .menu-controls {
   display: flex !important;
   flex-direction: column !important;
-  gap: var(--gap-sm) !important;
+  gap: 0.75rem !important;
   align-items: center !important;
 }
 .menu-controls select {
@@ -78,80 +44,72 @@ body {
   font-size: 1rem !important;
   min-width: 6rem !important;
 }
+#start-btn {
+  padding: 1rem 1.5rem !important;
+  font-size: 1.2rem !important;
+}
 
-/* ─── FLOATING ACTION BUTTONS ──────────────────────────────────────────────── */
-#guess-btn,
-#phone-mode-btn {
+/* ─── FLOATING BUTTONS ─────────────────────────────────────────────────────── */
+#phone-mode-btn,
+#guess-btn {
   position: fixed !important;
-  bottom: calc(var(--gap) + var(--safe-bottom)) !important;
-  width: var(--fab-size) !important;
-  height: var(--fab-size) !important;
-  border-radius: var(--fab-radius) !important;
-  background: var(--blue) !important;
+  bottom: calc(1rem + var(--safe-bottom)) !important;
+  width: 3.2rem !important;
+  height: 3.2rem !important;
+  border-radius: 50% !important;
+  background: #007bff !important;
   color: #fff !important;
   border: none !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-shadow: var(--fab-shadow) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
   cursor: pointer !important;
-  transition: transform 0.2s, box-shadow 0.2s !important;
   z-index: 1001 !important;
+  transition: transform 0.2s !important;
 }
-#guess-btn { left: var(--gap) !important; }
-#phone-mode-btn { right: var(--gap) !important; }
-#guess-btn:hover,
-#phone-mode-btn:hover {
+#phone-mode-btn:hover,
+#guess-btn:hover {
   transform: translateY(-3px) !important;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35) !important;
 }
-#guess-btn:active,
-#phone-mode-btn:active {
-  transform: translateY(-1px) scale(0.95) !important;
-}
+#phone-mode-btn { right: 1rem !important; }
+#guess-btn       { left:  1rem !important; }
 
 /* ─── MINI-MAP WRAPPER ─────────────────────────────────────────────────────── */
 .map-controls-wrapper {
   position: fixed !important;
-  right: var(--gap) !important;
-  bottom: calc(var(--gap) + var(--safe-bottom)) !important;
-  width: var(--map-w-land) !important;
-  height: var(--map-h-land) !important;
+  bottom: calc(1rem + var(--safe-bottom)) !important;
+  right: 1rem !important;
+  width: 200px !important;   /* explicit pixel sizing */
+  height: 150px !important;  /* 40% lower than default */
   border-radius: 0.75rem !important;
   overflow: hidden !important;
-  backdrop-filter: blur(4px) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
-  transform: none !important;
+  background: rgba(255,255,255,0.1) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
   z-index: 900 !important;
 }
-.map-controls-wrapper:hover {
-  transform: none !important;
-}
-
-/* make the map fill its wrapper with a gentle hover scale */
 .leaflet-map {
   width: 100% !important;
   height: 100% !important;
-  transition: transform 0.2s !important;
-}
-.leaflet-map:hover {
-  transform: scale(1.05) !important;
+  transition: none !important;
 }
 
-/* ─── HEADER & STATUS ───────────────────────────────────────────────────────── */
+/* ─── HEADER & STATUS (stay visible) ───────────────────────────────────────── */
 .game-header {
+  padding: 0.5rem 1rem !important;
   backdrop-filter: blur(6px) !important;
-  padding: 0.5rem var(--gap) !important;
+  z-index: 500 !important;
 }
 .game-header .title { font-size: 1.3rem !important; }
-.status, .timer { font-size: 0.9rem !important; }
+.status, .timer     { font-size: 0.9rem !important; }
 
-/* ─── OVERLAY STYLES ───────────────────────────────────────────────────────── */
+/* ─── LOADING & ENDGAME OVERLAYS ───────────────────────────────────────────── */
 .loading-overlay,
 .endgame-overlay {
-  background: rgba(0, 0, 0, 0.85) !important;
-  padding-top: calc(var(--gap) * 2) !important;
-  font-size: 0.9rem !important;
+  inset: 0 !important;
+  background: rgba(0,0,0,0.85) !important;
+  padding-top: 2rem !important;
+  z-index: 950 !important;
 }
 .spinner {
   width: 36px !important;
@@ -159,37 +117,14 @@ body {
   border-width: 4px !important;
 }
 
-/* ─── restore .hidden behavior for the menu overlay ────────────────────────── */
-.menu-screen.hidden {
-  display: none !important;
-}
-
-/* ─── GAME-OVER MODAL ──────────────────────────────────────────────────────── */
+/* ─── GAME-OVER MODAL ───────────────────────────────────────────────────────── */
 .modal {
   padding: 1.5rem !important;
   border-radius: 0.75rem !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+  z-index: 960 !important;
 }
 .modal .btn {
   padding: 0.75rem 1.5rem !important;
   font-size: 1.1rem !important;
-}
-
-/* ─── PORTRAIT SPECIFIC OVERRIDES ──────────────────────────────────────────── */
-@media (orientation: portrait) {
-  .map-controls-wrapper {
-    width: var(--map-w-port) !important;
-    height: var(--map-h-port) !important;
-  }
-}
-
-/* ─── OPTIONAL BREAKPOINTS ─────────────────────────────────────────────────── */
-@media (min-width: 576px) {
-  /* small tablets */
-}
-@media (min-width: 768px) {
-  /* large tablets */
-}
-@media (min-width: 992px) {
-  /* desktops */
 }
