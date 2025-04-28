@@ -3,15 +3,20 @@
    “Phone Mode” Overrides — mobile-first, loaded only when toggled on
    • Pixel-perfect mini-map in bottom-right
    • Floating “Guess” & “Phone Mode” FABs
-   • Hides attribution & original controls, keeps header & overlays legible
+   • Keeps any .hidden overlays truly hidden
    ============================================================================= */
+
+/* ─── HIDE ANY .hidden ELEMENTS ─────────────────────────────────────────────── */
+.hidden {
+  display: none !important;
+}
 
 /* ─── SAFE-AREA ─────────────────────────────────────────────────────────────── */
 :root {
   --safe-bottom: env(safe-area-inset-bottom, 1rem);
 }
 
-/* ─── MAIN MENU OVERLAY ────────────────────────────────────────────────────── */
+/* ─── MAIN MENU OVERLAY ───────────────────────────────────────────────────── */
 .menu-screen {
   position: fixed !important;
   inset: 0 !important;
@@ -136,6 +141,10 @@
   justify-content: center !important;
   padding-top: 2rem !important;
   z-index: 10003 !important;
+}
+.loading-overlay.hidden,
+.endgame-overlay.hidden {
+  display: none !important;
 }
 .spinner {
   width: 36px !important;
