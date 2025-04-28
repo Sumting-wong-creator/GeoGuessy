@@ -103,6 +103,9 @@ document.addEventListener('DOMContentLoaded', () => {
     await nextRound();
   });
 
+  // ─── GUESS BUTTON ───────────────────────────────────────────────────────────
+  guessBtn.addEventListener('click', doGuess);
+
   // ─── NEXT ROUND BUTTON ──────────────────────────────────────────────────────
   nextBtn.addEventListener('click', nextRound);
 
@@ -149,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const guessLatLng = guessMarker ? guessMarker.getLatLng() : map.getCenter();
 
-    // Place real marker
+    // Real marker
     realMarker = L.marker([realCoords.lat, realCoords.lng], {
       icon: L.icon({ iconUrl: './pin-blue.png', iconSize: [32,32], iconAnchor: [16,32] })
     }).addTo(map);
@@ -166,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateStatus(distance);
     finalScoreEl.textContent = newScore;
 
-    // Show “Next Round” button
+    // Show next
     nextBtn.classList.remove('hidden');
   }
 

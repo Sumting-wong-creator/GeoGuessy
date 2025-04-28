@@ -2,32 +2,32 @@
    ─────────────────────────────────────────────────────────────────────────────
    Overrides for iPhone landscape phone mode.
    This file is loaded when “Phone Mode” is toggled on.
-   Triple-checked for iPhone X/11/12/13/14 landscape at up to 812px wide.
+   Triple-checked for iPhone X/11/12/13/14 landscape (max-device-width: 812px).
 */
 
-/* Variables for quick tweaking */
+/* ─── VARIABLES ─────────────────────────────────────────────────────────────── */
 :root {
-    --phone-menu-gap:       1rem;
-    --phone-title-size:     2.5rem;
-    --phone-btn-padding:    1rem 1.5rem;
-    --phone-btn-font:       1.2rem;
-    --phone-map-width:      80vw;
-    --phone-map-height:     40vh;
-    --phone-map-offset-x:   5vw;
-    --phone-map-offset-y:   5vh;
-    --phone-control-gap:    0.5rem;
-    --phone-control-bottom: calc(var(--phone-map-offset-y) + 1rem);
+    --phone-menu-gap:        1rem;
+    --phone-title-size:      2.5rem;
+    --phone-btn-padding:     1rem 1.5rem;
+    --phone-btn-font:        1.2rem;
+    --phone-map-width:       80vw;
+    --phone-map-height:      40vh;
+    --phone-map-offset-x:    5vw;
+    --phone-map-offset-y:    5vh;
+    --phone-control-gap:     0.5rem;
+    --phone-control-bottom:  calc(var(--phone-map-offset-y) + 1rem);
     --phone-control-left:    var(--phone-map-offset-x);
     --phone-header-font:     1.3rem;
     --phone-status-font:     0.9rem;
   }
   
-  /* Apply only on iPhones in landscape up to 812px wide */
+  /* ─── PHONE-ONLY LANDSCAPE RULES ───────────────────────────────────────────── */
   @media only screen 
     and (max-device-width: 812px) 
     and (orientation: landscape) {
   
-    /* ─── MAIN MENU REFLOW ───────────────────────────────────────────────────── */
+    /* MAIN MENU RE-FLOW */
     .menu-screen {
       flex-direction: row !important;
       justify-content: space-around !important;
@@ -50,24 +50,29 @@
       font-size: var(--phone-btn-font) !important;
     }
   
-    /* ─── MAP CONTROLS RESIZE ────────────────────────────────────────────────── */
+    /* MAP CONTROLS WRAPPER (LEAFLET CONTAINER) */
     .map-controls-wrapper {
       width: var(--phone-map-width) !important;
       height: var(--phone-map-height) !important;
       right: var(--phone-map-offset-x) !important;
       bottom: var(--phone-map-offset-y) !important;
-      transform: none !important; /* disable hover scaling */
+      transform: none !important; /* disable hover-scale on wrapper */
     }
   
-    /* ─── LEAFLET MINI-MAP HALF-WIDTH ─────────────────────────────────────────── */
+    /* ─── SHRINK LEAFLET MAP HORIZONTALLY & HOVER-TO-ENLARGE ───────────────── */
     .leaflet-map {
-      width: 50% !important;          /* Half the container width */
+      width: 50% !important;                              /* half the container’s width */
       height: 100% !important;
+      transition: transform 0.2s ease-in-out !important;
       border-radius: 12px !important;
       opacity: 0.8 !important;
     }
+    .leaflet-map:hover {
+      transform: scale(1.2) !important;                   /* enlarge by 20% on hover */
+      transform-origin: center center !important;
+    }
   
-    /* ─── GUESS/NEXT BUTTONS POSITION ─────────────────────────────────────────── */
+    /* GUESS/NEXT CONTROLS POSITION */
     .controls {
       left: var(--phone-control-left) !important;
       bottom: var(--phone-control-bottom) !important;
@@ -78,7 +83,7 @@
       font-size: 1.1rem !important;
     }
   
-    /* ─── GAME HEADER ADJUSTMENTS ─────────────────────────────────────────────── */
+    /* HEADER TEXT SIZING */
     .game-header .title {
       font-size: var(--phone-header-font) !important;
     }
@@ -86,7 +91,7 @@
       font-size: var(--phone-status-font) !important;
     }
   
-    /* ─── LOADING + ENDGAME OVERLAY ───────────────────────────────────────────── */
+    /* LOADING & ENDGAME OVERLAY TWEAKS */
     .loading-overlay,
     .endgame-overlay {
       inset: 0 !important;
@@ -99,7 +104,7 @@
       border-width: 5px !important;
     }
   
-    /* ─── MODAL (GAME OVER) ───────────────────────────────────────────────────── */
+    /* MODAL (GAME OVER) */
     .modal {
       padding: 1.5rem !important;
       border-radius: 12px !important;
