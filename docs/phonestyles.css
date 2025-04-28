@@ -22,7 +22,7 @@
     --phone-status-font:     0.9rem;
   }
   
-  /* Apply all rules only on iPhones in landscape */
+  /* Apply only on iPhones in landscape up to 812px wide */
   @media only screen 
     and (max-device-width: 812px) 
     and (orientation: landscape) {
@@ -30,19 +30,19 @@
     /* ─── MAIN MENU REFLOW ───────────────────────────────────────────────────── */
     .menu-screen {
       flex-direction: row !important;
-      justify-content: space-around;
-      align-items: center;
-      padding: var(--phone-menu-gap);
-      gap: var(--phone-menu-gap);
+      justify-content: space-around !important;
+      align-items: center !important;
+      padding: var(--phone-menu-gap) !important;
+      gap: var(--phone-menu-gap) !important;
     }
     .menu-title {
       font-size: var(--phone-title-size) !important;
-      margin: 0;
+      margin: 0 !important;
     }
     .menu-controls {
       flex-direction: column !important;
-      gap: calc(var(--phone-menu-gap) * 0.75);
-      align-items: center;
+      gap: calc(var(--phone-menu-gap) * 0.75) !important;
+      align-items: center !important;
     }
     #start-btn,
     #phone-mode-btn {
@@ -58,8 +58,10 @@
       bottom: var(--phone-map-offset-y) !important;
       transform: none !important; /* disable hover scaling */
     }
+  
+    /* ─── LEAFLET MINI-MAP HALF-WIDTH ─────────────────────────────────────────── */
     .leaflet-map {
-      width: 100% !important;
+      width: 50% !important;          /* Half the container width */
       height: 100% !important;
       border-radius: 12px !important;
       opacity: 0.8 !important;
@@ -84,7 +86,7 @@
       font-size: var(--phone-status-font) !important;
     }
   
-    /* ─── LOADING OVERLAY TWEAK ───────────────────────────────────────────────── */
+    /* ─── LOADING + ENDGAME OVERLAY ───────────────────────────────────────────── */
     .loading-overlay,
     .endgame-overlay {
       inset: 0 !important;
@@ -97,7 +99,7 @@
       border-width: 5px !important;
     }
   
-    /* ─── MODAL BUTTONS (PLAY AGAIN) ─────────────────────────────────────────── */
+    /* ─── MODAL (GAME OVER) ───────────────────────────────────────────────────── */
     .modal {
       padding: 1.5rem !important;
       border-radius: 12px !important;
