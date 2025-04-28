@@ -15,12 +15,11 @@
 
   <!-- Core styles -->
   <link rel="stylesheet" href="./styles.css" />
-  <!-- Phone‐mode overrides (disabled by default) -->
+  <!-- Phone‐mode overrides -->
   <link id="phone-stylesheet" rel="stylesheet" href="./phonestyles.css" disabled />
 
-  <!-- Leaflet CSS -->
+  <!-- Leaflet & Mapillary styles -->
   <link rel="stylesheet" href="./leaflet.css" />
-  <!-- Mapillary CSS -->
   <link rel="stylesheet" href="./lib/mapillary.css" />
 </head>
 <body>
@@ -28,6 +27,7 @@
   <!-- ─── MAIN MENU ────────────────────────────────────────────────────────────── -->
   <div id="menu-screen" class="menu-screen">
     <h1 class="menu-title">GeoGuessy</h1>
+
     <div class="menu-controls">
       <label for="region-select">Choose Region:</label>
       <select id="region-select">
@@ -42,9 +42,12 @@
         <option>Earth [HARD]</option>
       </select>
     </div>
+
+    <!-- Primary action -->
     <button id="start-btn" class="btn btn-primary">Start Game</button>
-    <!-- NEW: Phone Mode toggle -->
-    <button id="phone-mode-btn" class="btn btn-secondary">Phone Mode</button>
+
+    <!-- NEW: Phone Layout toggle -->
+    <button id="phone-mode-btn" class="btn btn-secondary">Phone Layout</button>
   </div>
 
   <!-- ─── GAME SCREEN ──────────────────────────────────────────────────────────── -->
