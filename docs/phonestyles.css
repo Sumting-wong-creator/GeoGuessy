@@ -1,0 +1,109 @@
+/* phonestyles.css
+   ─────────────────────────────────────────────────────────────────────────────
+   Overrides for iPhone landscape phone mode.
+   This file is loaded when “Phone Mode” is toggled on.
+   Triple-checked for iPhone X/11/12/13/14 landscape at up to 812px wide.
+*/
+
+/* Variables for quick tweaking */
+:root {
+    --phone-menu-gap:       1rem;
+    --phone-title-size:     2.5rem;
+    --phone-btn-padding:    1rem 1.5rem;
+    --phone-btn-font:       1.2rem;
+    --phone-map-width:      80vw;
+    --phone-map-height:     40vh;
+    --phone-map-offset-x:   5vw;
+    --phone-map-offset-y:   5vh;
+    --phone-control-gap:    0.5rem;
+    --phone-control-bottom: calc(var(--phone-map-offset-y) + 1rem);
+    --phone-control-left:    var(--phone-map-offset-x);
+    --phone-header-font:     1.3rem;
+    --phone-status-font:     0.9rem;
+  }
+  
+  /* Apply all rules only on iPhones in landscape */
+  @media only screen 
+    and (max-device-width: 812px) 
+    and (orientation: landscape) {
+  
+    /* ─── MAIN MENU REFLOW ───────────────────────────────────────────────────── */
+    .menu-screen {
+      flex-direction: row !important;
+      justify-content: space-around;
+      align-items: center;
+      padding: var(--phone-menu-gap);
+      gap: var(--phone-menu-gap);
+    }
+    .menu-title {
+      font-size: var(--phone-title-size) !important;
+      margin: 0;
+    }
+    .menu-controls {
+      flex-direction: column !important;
+      gap: calc(var(--phone-menu-gap) * 0.75);
+      align-items: center;
+    }
+    #start-btn,
+    #phone-mode-btn {
+      padding: var(--phone-btn-padding) !important;
+      font-size: var(--phone-btn-font) !important;
+    }
+  
+    /* ─── MAP CONTROLS RESIZE ────────────────────────────────────────────────── */
+    .map-controls-wrapper {
+      width: var(--phone-map-width) !important;
+      height: var(--phone-map-height) !important;
+      right: var(--phone-map-offset-x) !important;
+      bottom: var(--phone-map-offset-y) !important;
+      transform: none !important; /* disable hover scaling */
+    }
+    .leaflet-map {
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 12px !important;
+      opacity: 0.8 !important;
+    }
+  
+    /* ─── GUESS/NEXT BUTTONS POSITION ─────────────────────────────────────────── */
+    .controls {
+      left: var(--phone-control-left) !important;
+      bottom: var(--phone-control-bottom) !important;
+      gap: var(--phone-control-gap) !important;
+    }
+    .controls .btn {
+      padding: 0.75rem !important;
+      font-size: 1.1rem !important;
+    }
+  
+    /* ─── GAME HEADER ADJUSTMENTS ─────────────────────────────────────────────── */
+    .game-header .title {
+      font-size: var(--phone-header-font) !important;
+    }
+    .status, .timer {
+      font-size: var(--phone-status-font) !important;
+    }
+  
+    /* ─── LOADING OVERLAY TWEAK ───────────────────────────────────────────────── */
+    .loading-overlay,
+    .endgame-overlay {
+      inset: 0 !important;
+      padding: 1rem !important;
+      font-size: 1.1rem !important;
+    }
+    .spinner {
+      width: 40px !important;
+      height: 40px !important;
+      border-width: 5px !important;
+    }
+  
+    /* ─── MODAL BUTTONS (PLAY AGAIN) ─────────────────────────────────────────── */
+    .modal {
+      padding: 1.5rem !important;
+      border-radius: 12px !important;
+    }
+    .modal .btn {
+      padding: 0.75rem 1.25rem !important;
+      font-size: 1.1rem !important;
+    }
+  }

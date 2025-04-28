@@ -1,4 +1,3 @@
-<!-- src/renderer/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,8 +12,15 @@
         " />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GeoGuessy</title>
+
+  <!-- Core styles -->
   <link rel="stylesheet" href="./styles.css" />
+  <!-- Phone‐mode overrides (disabled by default) -->
+  <link id="phone-stylesheet" rel="stylesheet" href="./phonestyles.css" disabled />
+
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="./leaflet.css" />
+  <!-- Mapillary CSS -->
   <link rel="stylesheet" href="./lib/mapillary.css" />
 </head>
 <body>
@@ -37,6 +43,8 @@
       </select>
     </div>
     <button id="start-btn" class="btn btn-primary">Start Game</button>
+    <!-- NEW: Phone Mode toggle -->
+    <button id="phone-mode-btn" class="btn btn-secondary">Phone Mode</button>
   </div>
 
   <!-- ─── GAME SCREEN ──────────────────────────────────────────────────────────── -->
@@ -55,7 +63,6 @@
         <div class="loading-text">Loading…</div>
       </div>
 
-      <!-- Wrapped mini-map + controls so they scale together -->
       <div class="map-controls-wrapper">
         <div id="leaflet-map" class="leaflet-map"></div>
         <div id="controls" class="controls">
@@ -74,7 +81,7 @@
     </div>
   </div>
 
-  <!-- SCRIPTS -->
+  <!-- ─── SCRIPTS ───────────────────────────────────────────────────────────────── -->
   <script src="./leaflet.js"></script>
   <script src="./mapillary-loader.js"></script>
   <script src="./init.js"></script>
