@@ -1,184 +1,172 @@
 /* phonestyles.css
    =============================================================================
    Phone Mode Overrides for iPhone Landscape (max-device-width: 812px)
-   • Full overrides for menus, FABs, and mini-map
-   • Mini-map wrapper now 240px wide × 140px tall (absolute pixels)
-   • Fixed to viewport bottom-right, safe-area aware
-   • Polished backdrop-blur, shadows, hover effects, responsive fonts
+   • Full menu + FAB + mini-map overrides
+   • Mini-map wrapper: 240px wide × 140px tall
+   • Pinned fixed bottom-right, safe-area aware
    ============================================================================= */
 
-/* ─── GLOBAL VARIABLES & SAFE-AREA ───────────────────────────────────────────── */
-:root {
-  /* Safe-area inset at bottom (home-indicator) */
-  --safe-inset-bottom:    env(safe-area-inset-bottom, 1rem);
-
-  /* Spacing */
-  --gap-md:               1rem;
-  --gap-sm:               0.75rem;
-
-  /* Font scales */
-  --font-title:           2.5rem;
-  --font-header:          1.3rem;
-  --font-status:          0.9rem;
-  --font-fab:             1rem;
-
-  /* FAB (floating action button) */
-  --fab-size:             3.5rem;
-  --fab-radius:           50%;
-  --fab-shadow:           0 4px 12px rgba(0,0,0,0.3);
-
-  /* Mini-map wrapper dimensions */
-  --map-width:            240px;
-  --map-height:           140px;
-
-  /* Map wrapper offsets */
-  --map-offset-x:         20px;
-  --map-offset-y:         calc(20px + var(--safe-inset-bottom));
-
-  /* Transition speed */
-  --transition-fast:      0.2s ease-in-out;
-}
-
-/* ─── APPLY ONLY ON PHONE LANDSCAPE ─────────────────────────────────────────── */
-@media only screen 
-  and (max-device-width: 812px) 
-  and (orientation: landscape) {
-
-  /* ── SAFE-AREA PADDING ───────────────────────────────────────────────────── */
-  body {
-    padding-bottom: var(--safe-inset-bottom) !important;
+   :root {
+    --safe-inset-bottom:    env(safe-area-inset-bottom, 1rem);
+    --gap-md:               1rem;
+    --gap-sm:               0.75rem;
+    --font-title:           2.5rem;
+    --font-header:          1.3rem;
+    --font-status:          0.9rem;
+    --font-fab:             1rem;
+    --fab-size:             3.5rem;
+    --fab-radius:           50%;
+    --fab-shadow:           0 4px 12px rgba(0,0,0,0.3);
+    --map-width:            240px;
+    --map-height:           140px;
+    --map-offset-x:         20px;
+    --map-offset-y:         calc(20px + var(--safe-inset-bottom));
+    --transition-fast:      0.2s ease-in-out;
   }
-
-  /* ── MENU SCREEN RE-FLOW & STYLING ───────────────────────────────────────── */
-  .menu-screen {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    padding: var(--gap-md) !important;
-    gap: var(--gap-md) !important;
-    backdrop-filter: blur(8px) !important;
-    background: rgba(255,255,255,0.85) !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
-    z-index: 1000 !important;
+  
+  @media only screen 
+    and (max-device-width: 812px) 
+    and (orientation: landscape) {
+  
+    /* safe-area at bottom */
+    body {
+      padding-bottom: var(--safe-inset-bottom) !important;
+    }
+  
+    /* reflow main menu */
+    .menu-screen {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      padding: var(--gap-md) !important;
+      gap: var(--gap-md) !important;
+      backdrop-filter: blur(8px) !important;
+      background: rgba(255,255,255,0.85) !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+      z-index: 1000 !important;
+    }
+    .menu-title {
+      flex: 1 0 auto !important;
+      text-align: center !important;
+      font-size: var(--font-title) !important;
+      margin: 0 !important;
+    }
+    .menu-controls {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: var(--gap-sm) !important;
+      align-items: center !important;
+    }
+    .menu-controls select {
+      padding: 0.75rem !important;
+      font-size: var(--font-header) !important;
+      min-width: 6rem !important;
+    }
+  
+    /* hide in‐map controls (we use FAB) */
+    .controls {
+      display: none !important;
+    }
+  
+    /* FAB styling */
+    #guess-btn,
+    #phone-mode-btn {
+      position: fixed !important;
+      width: var(--fab-size) !important;
+      height: var(--fab-size) !important;
+      font-size: var(--font-fab) !important;
+      background: var(--blue) !important;
+      color: #fff !important;
+      border: none !important;
+      border-radius: var(--fab-radius) !important;
+      box-shadow: var(--fab-shadow) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      cursor: pointer !important;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast) !important;
+      z-index: 1000 !important;
+    }
+    #guess-btn {
+      left: var(--gap-md) !important;
+      bottom: var(--safe-inset-bottom) !important;
+    }
+    #phone-mode-btn {
+      right: var(--gap-md) !important;
+      bottom: var(--safe-inset-bottom) !important;
+    }
+    #guess-btn:hover,
+    #phone-mode-btn:hover {
+      transform: translateY(-4px) !important;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35) !important;
+    }
+    #guess-btn:active,
+    #phone-mode-btn:active {
+      transform: translateY(-2px) scale(0.98) !important;
+    }
+  
+    /* mini-map wrapper pinned bottom-right */
+    .map-controls-wrapper {
+      position: fixed !important;
+      right: var(--map-offset-x) !important;
+      bottom: var(--map-offset-y) !important;
+      width: var(--map-width) !important;
+      height: var(--map-height) !important;
+      border-radius: 0.75rem !important;
+      overflow: hidden !important;
+      backdrop-filter: blur(4px) !important;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
+      transform: none !important;
+      z-index: 900 !important;
+    }
+    .map-controls-wrapper:hover {
+      transform: none !important;
+    }
+  
+    /* fill wrapper */
+    .leaflet-map {
+      width: 100% !important;
+      height: 100% !important;
+      transition: transform var(--transition-fast) !important;
+    }
+    .leaflet-map:hover {
+      transform: scale(1.05) !important;
+    }
+  
+    /* header & status */
+    .game-header {
+      backdrop-filter: blur(6px) !important;
+      padding: 0.5rem var(--gap-md) !important;
+    }
+    .game-header .title {
+      font-size: var(--font-header) !important;
+    }
+    .status, .timer {
+      font-size: var(--font-status) !important;
+    }
+  
+    /* overlays */
+    .loading-overlay,
+    .endgame-overlay {
+      background: rgba(0,0,0,0.85) !important;
+      padding-top: calc(var(--gap-md)*2) !important;
+      font-size: var(--font-status) !important;
+    }
+    .spinner {
+      width: 36px !important;
+      height: 36px !important;
+      border-width: 4px !important;
+    }
+  
+    /* game-over modal */
+    .modal {
+      padding: 1.5rem !important;
+      border-radius: 0.75rem !important;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+    }
+    .modal .btn {
+      padding: 0.75rem 1.5rem !important;
+      font-size: 1.1rem !important;
+    }
   }
-  .menu-title {
-    flex: 1 0 auto !important;
-    text-align: center !important;
-    font-size: var(--font-title) !important;
-    margin: 0 !important;
-  }
-  .menu-controls {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: var(--gap-sm) !important;
-    align-items: center !important;
-  }
-  .menu-controls select {
-    padding: 0.75rem !important;
-    font-size: var(--font-header) !important;
-    min-width: 6rem !important;
-  }
-
-  /* ── FLOATING ACTION BUTTONS (FABs) ──────────────────────────────────────── */
-  #guess-btn,
-  #phone-mode-btn {
-    position: fixed !important;
-    width: var(--fab-size) !important;
-    height: var(--fab-size) !important;
-    font-size: var(--font-fab) !important;
-    background: var(--blue) !important;
-    color: #fff !important;
-    border: none !important;
-    border-radius: var(--fab-radius) !important;
-    box-shadow: var(--fab-shadow) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast) !important;
-    z-index: 1000 !important;
-  }
-  #guess-btn {
-    left: var(--gap-md) !important;
-    bottom: var(--safe-inset-bottom) !important;
-  }
-  #phone-mode-btn {
-    right: var(--gap-md) !important;
-    bottom: var(--safe-inset-bottom) !important;
-  }
-  #guess-btn:hover,
-  #phone-mode-btn:hover {
-    transform: translateY(-4px) !important;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.35) !important;
-  }
-  #guess-btn:active,
-  #phone-mode-btn:active {
-    transform: translateY(-2px) scale(0.98) !important;
-  }
-
-  /* ── MINI-MAP WRAPPER FIXED BOTTOM-RIGHT ─────────────────────────────────── */
-  .map-controls-wrapper {
-    position: fixed !important;
-    right: var(--map-offset-x) !important;
-    bottom: var(--map-offset-y) !important;
-    width: var(--map-width) !important;
-    height: var(--map-height) !important;
-    border-radius: 0.75rem !important;
-    overflow: hidden !important;
-    backdrop-filter: blur(4px) !important;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
-    transform: none !important;
-    z-index: 900 !important;
-  }
-  .map-controls-wrapper:hover {
-    transform: none !important;
-  }
-
-  /* ── LEAFLET MINI-MAP FULL WRAPPER FILL ──────────────────────────────────── */
-  .leaflet-map {
-    width: 100% !important;
-    height: 100% !important;
-    transition: transform var(--transition-fast) !important;
-  }
-  .leaflet-map:hover {
-    transform: scale(1.05) !important;
-    transform-origin: center center !important;
-  }
-
-  /* ── GAME HEADER & STATUS ADJUSTMENTS ───────────────────────────────────── */
-  .game-header {
-    backdrop-filter: blur(6px) !important;
-    padding: 0.5rem var(--gap-md) !important;
-  }
-  .game-header .title {
-    font-size: var(--font-header) !important;
-  }
-  .status, .timer {
-    font-size: var(--font-status) !important;
-  }
-
-  /* ── LOADING & ENDGAME OVERLAY ───────────────────────────────────────────── */
-  .loading-overlay,
-  .endgame-overlay {
-    background: rgba(0,0,0,0.85) !important;
-    padding-top: calc(var(--gap-md)*2) !important;
-    font-size: var(--font-status) !important;
-  }
-  .spinner {
-    width: 36px !important;
-    height: 36px !important;
-    border-width: 4px !important;
-  }
-
-  /* ── GAME OVER MODAL ─────────────────────────────────────────────────────── */
-  .modal {
-    padding: 1.5rem !important;
-    border-radius: 0.75rem !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
-  }
-  .modal .btn {
-    padding: 0.75rem 1.5rem !important;
-    font-size: 1.1rem !important;
-  }
-}
