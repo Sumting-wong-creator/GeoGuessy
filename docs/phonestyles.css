@@ -3,7 +3,7 @@
    “Phone Mode” Overrides — mobile-first, loaded only when toggled on
    • Pixel-perfect mini-map in bottom-right
    • Floating “Guess” & “Phone Mode” FABs
-   • Hides attribution, keeps header & overlays legible
+   • Hides attribution & original controls, keeps header & overlays legible
    ============================================================================= */
 
 /* ─── SAFE-AREA ─────────────────────────────────────────────────────────────── */
@@ -11,7 +11,7 @@
   --safe-bottom: env(safe-area-inset-bottom, 1rem);
 }
 
-/* ─── MAIN MENU OVERLAY ───────────────────────────────────────────────────── */
+/* ─── MAIN MENU OVERLAY ────────────────────────────────────────────────────── */
 .menu-screen {
   position: fixed !important;
   inset: 0 !important;
@@ -22,7 +22,7 @@
   padding: 1rem !important;
   background: rgba(255,255,255,0.95) !important;
   backdrop-filter: blur(8px) !important;
-  z-index: 1000 !important;
+  z-index: 10000 !important;
 }
 .menu-screen.hidden {
   display: none !important;
@@ -48,7 +48,13 @@
   font-size: 1.2rem !important;
 }
 
-/* ─── FLOATING BUTTONS ─────────────────────────────────────────────────────── */
+/* ─── HIDE ORIGINAL CONTROLS ───────────────────────────────────────────────── */
+.controls,
+#controls {
+  display: none !important;
+}
+
+/* ─── FLOATING FABs ─────────────────────────────────────────────────────────── */
 #phone-mode-btn,
 #guess-btn {
   position: fixed !important;
@@ -64,28 +70,32 @@
   justify-content: center !important;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
   cursor: pointer !important;
-  z-index: 1001 !important;
+  z-index: 10001 !important;
   transition: transform 0.2s !important;
 }
 #phone-mode-btn:hover,
 #guess-btn:hover {
   transform: translateY(-3px) !important;
 }
-#phone-mode-btn { right: 1rem !important; }
-#guess-btn       { left:  1rem !important; }
+#phone-mode-btn {
+  right: 1rem !important;
+}
+#guess-btn {
+  left: 1rem !important;
+}
 
 /* ─── MINI-MAP WRAPPER ─────────────────────────────────────────────────────── */
 .map-controls-wrapper {
   position: fixed !important;
   bottom: calc(1rem + var(--safe-bottom)) !important;
   right: 1rem !important;
-  width: 200px !important;   /* exact pixel width */
-  height: 150px !important;  /* 40% shorter than default */
+  width: 200px !important;    /* exact width in px */
+  height: 150px !important;   /* exact height in px */
   border-radius: 0.75rem !important;
   overflow: hidden !important;
   background: rgba(255,255,255,0.1) !important;
   box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
-  z-index: 900 !important;
+  z-index: 10000 !important;
 }
 .leaflet-map {
   width: 100% !important;
@@ -94,27 +104,38 @@
 }
 
 /* ─── HIDE ATTRIBUTION ─────────────────────────────────────────────────────── */
-.leaflet-control-container .leaflet-control-attribution,
-.leaflet-control-attribution {
+.leaflet-control-attribution,
+.leaflet-control-container .leaflet-control-attribution {
   display: none !important;
 }
 
 /* ─── HEADER & STATUS ───────────────────────────────────────────────────────── */
 .game-header {
+  position: relative !important;
   padding: 0.5rem 1rem !important;
   backdrop-filter: blur(6px) !important;
-  z-index: 500 !important;
+  z-index: 10002 !important;
 }
-.game-header .title { font-size: 1.3rem !important; }
-.status, .timer     { font-size: 0.9rem !important; }
+.game-header .title {
+  font-size: 1.3rem !important;
+}
+.status,
+.timer {
+  font-size: 0.9rem !important;
+}
 
 /* ─── LOADING & ENDGAME OVERLAYS ───────────────────────────────────────────── */
 .loading-overlay,
 .endgame-overlay {
+  position: fixed !important;
   inset: 0 !important;
   background: rgba(0,0,0,0.85) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
   padding-top: 2rem !important;
-  z-index: 950 !important;
+  z-index: 10003 !important;
 }
 .spinner {
   width: 36px !important;
@@ -124,10 +145,11 @@
 
 /* ─── GAME-OVER MODAL ───────────────────────────────────────────────────────── */
 .modal {
+  background: #fff !important;
   padding: 1.5rem !important;
   border-radius: 0.75rem !important;
   box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
-  z-index: 960 !important;
+  z-index: 10004 !important;
 }
 .modal .btn {
   padding: 0.75rem 1.5rem !important;
