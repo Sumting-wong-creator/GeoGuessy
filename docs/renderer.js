@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let map, viewer, countdownId;
   let round = 0, score = 0, timeLeft = ROUND_TIME, canGuess = false;
   let guessMarker, realMarker, line1, line2, realCoords;
-  let mapClickHandler;  // store the handler so we can remove it later
+  let mapClickHandler;
 
   // ─── PHONE MODE & ORIENTATION LOCK ──────────────────────────────────────────
   phoneBtn.addEventListener('click', async () => {
@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ─── START GAME ──────────────────────────────────────────────────────────────
   startBtn.addEventListener('click', async () => {
-    // reset everything
     round = 0;
     score = 0;
     gameLogic.score = 0;
@@ -91,12 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
       noWrap:      true
     }).addTo(map);
 
-    // store the handler so we can off() it later
+    // save this handler so we can off() it later
     mapClickHandler = e => {
       if (!canGuess) return;
-      // show the Guess FAB
       guessBtn.disabled = false;
-      // place or move the red "guess" marker
       if (guessMarker) {
         guessMarker.setLatLng(e.latlng);
       } else {
@@ -108,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
           }),
           draggable: true
         }).addTo(map);
-        // only allow dragging while canGuess===true
         guessMarker.on('dragstart', () => {
           if (!canGuess) guessMarker.dragging.disable();
         });
@@ -143,17 +139,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── NEXT ROUND ─────────────────────────────────────────────────────────────
   async function nextRound() {
     clearInterval(countdownId);
-    // remove previous markers & polylines
     [guessMarker, realMarker, line1, line2].forEach(l => l && map.removeLayer(l));
     guessMarker = realMarker = line1 = line2 = null;
 
-    // reset Guess button
-    guessBtn.disabled = true;
-
-    // re-enable placing
+    // re-enable placement
     canGuess = true;
+    guessBtn.disabled = true;
     map.on('click', mapClickHandler);
-
     nextBtn.classList.add('hidden');
 
     round++;
@@ -180,18 +172,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ─── GUESS + DUAL-COLORED LINE + SCORING ────────────────────────────────────
+  // ─── GUESS + FREEZE MARKER + DUAL-COLORED LINE + SCORING ────────────────────
   async function doGuess() {
     if (!canGuess) return;
     canGuess = false;
 
-    // immediately disable further map‐clicks
+    // stop further placement
     map.off('click', mapClickHandler);
 
-    // disable drag on the marker
+    // disable Leaflet dragging on that marker
     if (guessMarker && guessMarker.dragging) {
       guessMarker.dragging.disable();
     }
+    // also disable pointer‐events on its DOM element
+    const iconEl = guessMarker?.getElement?.();
+    if (iconEl) iconEl.style.pointerEvents = 'none';
 
     clearInterval(countdownId);
 
@@ -199,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ? guessMarker.getLatLng()
       : map.getCenter();
 
-    // blue "real" marker
+    // show real location
     realMarker = L.marker(
       [realCoords.lat, realCoords.lng],
       { icon: L.icon({
@@ -210,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     ).addTo(map);
 
-    // draw black + orange segments
+    // draw two‐colored line
     const midLat = (guessLatLng.lat + realCoords.lat)/2;
     const midLng = (guessLatLng.lng + realCoords.lng)/2;
 
@@ -224,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
       { color:'orange', weight:4 }
     ).addTo(map);
 
-    // scoring
+    // score it
     const { distance, points, score:newScore } = await gameLogic.makeGuess({
       lat: guessLatLng.lat,
       lng: guessLatLng.lng
@@ -242,20 +237,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ─── RESTART (in-app reset) ─────────────────────────────────────────────────
+  // ─── RESTART ────────────────────────────────────────────────────────────────
   document.getElementById('restart-btn')
     .addEventListener('click', () => {
       endOv.classList.add('hidden');
       controlsEl.classList.remove('hidden');
       wrapperEl.classList.remove('hidden');
-
       round = 0;
       score = 0;
       gameLogic.score = 0;
       timeLeft = ROUND_TIME;
       updateStatus();
       finalScoreEl.textContent = '0';
-
       menuScreen.classList.remove('hidden');
       gameContainer.classList.add('hidden');
     });
