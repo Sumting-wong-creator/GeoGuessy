@@ -1,8 +1,9 @@
 /* phonestyles.css
    =============================================================================
    Phone Mode Overrides for iPhone Landscape (max-device-width: 812px)
-   • Map wrapper height reduced by 40%, width increased by 25%
-   • Fixed-position FABs, safe-area support, polished backdrops & shadows
+   • Map wrapper height reduced by 40%
+   • Map wrapper width increased by 25px (from 150px to 188px)
+   • Fixed-position FABs, safe-area inset, polished UI
    ============================================================================= */
 
 /* ─── GLOBAL VARIABLES & SAFE-AREA ───────────────────────────────────────────── */
@@ -25,9 +26,11 @@
   --fab-radius:           50%;
   --fab-shadow-light:     0 4px 12px rgba(0,0,0,0.3);
 
-  /* map wrapper — width increased 25% (150px→187.5px), height reduced 40% (325px→195px) */
-  --map-width:            188px;  /* was 150px */
-  --map-height:           195px;  /* was 325px */
+  /* map wrapper — NEW absolute dimensions */
+  --map-width:            188px;   /* was 150px, now +25% => 150px ×1.25 */
+  --map-height:           195px;   /* was 325px, now −40% => 325px ×0.6 */
+
+  /* map wrapper offsets */
   --map-offset-x:         20px;
   --map-offset-y:         calc(20px + var(--safe-inset-bottom));
 
@@ -40,17 +43,17 @@
   and (max-device-width: 812px) 
   and (orientation: landscape) {
 
-  /* safe-area padding */
+  /* ── SAFE-AREA PADDING ───────────────────────────────────────────────────── */
   body {
     padding-bottom: var(--safe-inset-bottom) !important;
   }
 
-  /* hide inline controls */
+  /* ── HIDE INLINE CONTROLS ─────────────────────────────────────────────────── */
   .controls {
     display: none !important;
   }
 
-  /* MENU SCREEN */
+  /* ── MENU SCREEN ─────────────────────────────────────────────────────────── */
   .menu-screen {
     flex-direction: row !important;
     justify-content: space-between !important;
@@ -78,7 +81,7 @@
     min-width: 6rem !important;
   }
 
-  /* FAB BUTTONS */
+  /* ── FIXED FAB BUTTONS ───────────────────────────────────────────────────── */
   #guess-btn,
   #phone-mode-btn {
     position: fixed !important;
@@ -115,7 +118,7 @@
     transform: translateY(-2px) scale(0.98) !important;
   }
 
-  /* MAP WRAPPER (BOTTOM-RIGHT) */
+  /* ── FIXED MAP WRAPPER (BOTTOM-RIGHT) ───────────────────────────────────── */
   .map-controls-wrapper {
     position: fixed !important;
     right: var(--map-offset-x) !important;
@@ -133,9 +136,9 @@
     transform: none !important;
   }
 
-  /* MINI-MAP FULL WRAPPER WIDTH */
+  /* ── MINI-MAP FIXED WIDTH ────────────────────────────────────────────────── */
   .leaflet-map {
-    width: 100% !important;   /* now fits 188px wrapper */
+    width: 100% !important;   /* fills the new 188px wrapper */
     height: 100% !important;
     transition: transform var(--trans-fast) !important;
   }
@@ -144,7 +147,7 @@
     transform-origin: center center !important;
   }
 
-  /* HEADER & STATUS */
+  /* ── GAME HEADER & STATUS ────────────────────────────────────────────────── */
   .game-header {
     backdrop-filter: blur(6px) !important;
     padding: 0.5rem var(--gap-md) !important;
@@ -156,7 +159,7 @@
     font-size: var(--font-status) !important;
   }
 
-  /* OVERLAYS */
+  /* ── LOADING & ENDGAME OVERLAY ───────────────────────────────────────────── */
   .loading-overlay,
   .endgame-overlay {
     background: rgba(0,0,0,0.85) !important;
@@ -169,7 +172,7 @@
     border-width: 4px !important;
   }
 
-  /* MODAL */
+  /* ── MODAL (GAME OVER) ───────────────────────────────────────────────────── */
   .modal {
     padding: 1.5rem !important;
     border-radius: 0.75rem !important;
