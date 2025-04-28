@@ -1,7 +1,7 @@
 // src/renderer/renderer.js
 
 import { mapillaryService, REGION_BBOXES } from './services/mapillary.js';
-import { gameLogic                           } from './services/game-logic.js';
+import { gameLogic } from './services/game-logic.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // ─── ELEMENT REFERENCES ───────────────────────────────────────────────────────
@@ -85,13 +85,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.toggle('dark-mode');
   });
 
-  // ─── PHONE LAYOUT TOGGLE ────────────────────────────────────────────────────
-  phoneBtn.addEventListener('click', () => {
-    const isEnabled = phoneSheet.disabled;
-    phoneSheet.disabled = !isEnabled;
-    phoneBtn.textContent = isEnabled
-      ? 'Exit Phone Layout'
-      : 'Phone Layout';
+  // ─── PHONE MODE & ORIENTATION LOCK ──────────────────────────────────────────
+  phoneBtn.addEventListener('click', async () => {
+    const enabling = phoneSheet.disabled;
+    phoneSheet.disabled = !enabling;
+    phoneBtn.textContent = enabling ? 'Exit Phone Mode' : 'Phone Mode';
+    if ('orientation' in screen && screen.orientation.lock) {
+      try {
+        if (enabling) {
+          await screen.orientation.lock('landscape');
+        } else {
+          await screen.orientation.unlock();
+        }
+      } catch (err) {
+        console.warn('Orientation lock failed:', err);
+      }
+    }
   });
 
   // ─── START GAME ──────────────────────────────────────────────────────────────
@@ -103,13 +112,11 @@ document.addEventListener('DOMContentLoaded', () => {
     await nextRound();
   });
 
-  // ─── GUESS BUTTON ───────────────────────────────────────────────────────────
+  // ─── GUESS & NEXT BUTTONS ───────────────────────────────────────────────────
   guessBtn.addEventListener('click', doGuess);
-
-  // ─── NEXT ROUND BUTTON ──────────────────────────────────────────────────────
   nextBtn.addEventListener('click', nextRound);
 
-  // ─── NEW ROUND ──────────────────────────────────────────────────────────────
+  // ─── NEXT ROUND ─────────────────────────────────────────────────────────────
   async function nextRound() {
     clearInterval(countdownId);
     [guessMarker, realMarker, line1, line2].forEach(layer => layer && map.removeLayer(layer));
@@ -120,18 +127,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     round++;
     startTimer();
-
     loadOv.classList.remove('hidden');
+
     try {
       const loc = await gameLogic.startNewRound(regionSelect.value);
       realCoords = { lat: loc.lat, lng: loc.lng };
 
-      const region = gameLogic.region;
-      if (region !== 'All Israel' && region !== 'Earth [HARD]') {
-        const bb = REGION_BBOXES[region];
+      if (gameLogic.region !== 'All Israel' && gameLogic.region !== 'Earth [HARD]') {
+        const bb = REGION_BBOXES[gameLogic.region];
         map.fitBounds([[bb.minLat, bb.minLng], [bb.maxLat, bb.maxLng]]);
       }
-
       updateStatus();
 
       if (!viewer) {
@@ -144,23 +149,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ─── GUESS HANDLING & SCORING ────────────────────────────────────────────────
+  // ─── GUESS & SCORING ─────────────────────────────────────────────────────────
   async function doGuess() {
     if (!canGuess) return;
     canGuess = false;
     clearInterval(countdownId);
 
-    const guessLatLng = guessMarker ? guessMarker.getLatLng() : map.getCenter();
+    // Determine guess position
+    const guessLatLng = guessMarker
+      ? guessMarker.getLatLng()
+      : map.getCenter();
 
-    // Real marker
-    realMarker = L.marker([realCoords.lat, realCoords.lng], {
-      icon: L.icon({ iconUrl: './pin-blue.png', iconSize: [32,32], iconAnchor: [16,32] })
-    }).addTo(map);
+    // Show the real location marker
+    realMarker = L.marker(
+      [realCoords.lat, realCoords.lng],
+      { icon: L.icon({ iconUrl: './pin-blue.png', iconSize: [32,32], iconAnchor: [16,32] }) }
+    ).addTo(map);
 
-    // Draw line
-    line1 = L.polyline([guessLatLng, realCoords], { color: 'red' }).addTo(map);
+    // Calculate midpoint for two-color line
+    const midLat = (guessLatLng.lat + realCoords.lat) / 2;
+    const midLng = (guessLatLng.lng + realCoords.lng) / 2;
 
-    // Score
+    // Draw first segment (black)
+    line1 = L.polyline(
+      [
+        [guessLatLng.lat, guessLatLng.lng],
+        [midLat, midLng]
+      ],
+      { color: 'black', weight: 4 }
+    ).addTo(map);
+
+    // Draw second segment (orange)
+    line2 = L.polyline(
+      [
+        [midLat, midLng],
+        [realCoords.lat, realCoords.lng]
+      ],
+      { color: 'orange', weight: 4 }
+    ).addTo(map);
+
+    // Score the guess
     const { distance, points, score: newScore } = await gameLogic.makeGuess({
       lat: guessLatLng.lat,
       lng: guessLatLng.lng
@@ -168,12 +196,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateStatus(distance);
     finalScoreEl.textContent = newScore;
-
-    // Show next
     nextBtn.classList.remove('hidden');
   }
 
-  // ─── RESTART BUTTON ─────────────────────────────────────────────────────────
+  // ─── RESTART ────────────────────────────────────────────────────────────────
   document.getElementById('restart-btn').addEventListener('click', () => {
     window.location.reload();
   });
