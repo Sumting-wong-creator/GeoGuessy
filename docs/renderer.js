@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let map, viewer, countdownId;
   let round = 0, score = 0, timeLeft = ROUND_TIME, canGuess = false;
   let guessMarker, realMarker, line1, line2, realCoords;
+  let mapClickHandler;  // store the handler so we can remove it later
 
   // ─── PHONE MODE & ORIENTATION LOCK ──────────────────────────────────────────
   phoneBtn.addEventListener('click', async () => {
@@ -90,13 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
       noWrap:      true
     }).addTo(map);
 
-    map.on('click', e => {
+    // store the handler so we can off() it later
+    mapClickHandler = e => {
       if (!canGuess) return;
-      // enable the Guess button
+      // show the Guess FAB
       guessBtn.disabled = false;
-      guessBtn.style.opacity = '1';
-      guessBtn.style.pointerEvents = 'auto';
-
+      // place or move the red "guess" marker
       if (guessMarker) {
         guessMarker.setLatLng(e.latlng);
       } else {
@@ -108,8 +108,13 @@ document.addEventListener('DOMContentLoaded', () => {
           }),
           draggable: true
         }).addTo(map);
+        // only allow dragging while canGuess===true
+        guessMarker.on('dragstart', () => {
+          if (!canGuess) guessMarker.dragging.disable();
+        });
       }
-    });
+    };
+    map.on('click', mapClickHandler);
   }
 
   // ─── STATUS UPDATE & TIMER ──────────────────────────────────────────────────
@@ -138,17 +143,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── NEXT ROUND ─────────────────────────────────────────────────────────────
   async function nextRound() {
     clearInterval(countdownId);
-    // clear previous markers & lines
-    [guessMarker, realMarker, line1, line2].forEach(layer => layer && map.removeLayer(layer));
+    // remove previous markers & polylines
+    [guessMarker, realMarker, line1, line2].forEach(l => l && map.removeLayer(l));
     guessMarker = realMarker = line1 = line2 = null;
 
     // reset Guess button
     guessBtn.disabled = true;
-    guessBtn.style.opacity = '1';
-    guessBtn.style.pointerEvents = 'auto';
+
+    // re-enable placing
+    canGuess = true;
+    map.on('click', mapClickHandler);
 
     nextBtn.classList.add('hidden');
-    canGuess = true;
 
     round++;
     startTimer();
@@ -160,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (![ 'All Israel', 'Earth [HARD]' ].includes(gameLogic.region)) {
         const bb = REGION_BBOXES[gameLogic.region];
-        map.fitBounds([[bb.minLat, bb.minLng], [bb.maxLat, bb.maxLng]]);
+        map.fitBounds([[bb.minLat, bb.minLng],[bb.maxLat, bb.maxLng]]);
       }
 
       updateStatus();
@@ -178,23 +184,25 @@ document.addEventListener('DOMContentLoaded', () => {
   async function doGuess() {
     if (!canGuess) return;
     canGuess = false;
-    clearInterval(countdownId);
 
-    // ─── LOCK THE GUESS MARKER ───────────────────────────────────────────────
-    map.off('click');                       // stop placing/moving the red pin
-    if (guessMarker?.dragging) {
-      guessMarker.dragging.disable();       // disable dragging
+    // immediately disable further map‐clicks
+    map.off('click', mapClickHandler);
+
+    // disable drag on the marker
+    if (guessMarker && guessMarker.dragging) {
+      guessMarker.dragging.disable();
     }
+
+    clearInterval(countdownId);
 
     const guessLatLng = guessMarker
       ? guessMarker.getLatLng()
       : map.getCenter();
 
-    // show real marker
+    // blue "real" marker
     realMarker = L.marker(
       [realCoords.lat, realCoords.lng],
-      {
-        icon: L.icon({
+      { icon: L.icon({
           iconUrl: './pin-blue.png',
           iconSize: [32,32],
           iconAnchor: [16,32]
@@ -202,29 +210,21 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     ).addTo(map);
 
-    // midpoint
-    const midLat = (guessLatLng.lat + realCoords.lat) / 2;
-    const midLng = (guessLatLng.lng + realCoords.lng) / 2;
+    // draw black + orange segments
+    const midLat = (guessLatLng.lat + realCoords.lat)/2;
+    const midLng = (guessLatLng.lng + realCoords.lng)/2;
 
-    // black segment
     line1 = L.polyline(
-      [
-        [guessLatLng.lat, guessLatLng.lng],
-        [midLat, midLng]
-      ],
-      { color: 'black', weight: 4 }
+      [[guessLatLng.lat, guessLatLng.lng],[midLat, midLng]],
+      { color:'black', weight:4 }
     ).addTo(map);
 
-    // orange segment
     line2 = L.polyline(
-      [
-        [midLat, midLng],
-        [realCoords.lat, realCoords.lng]
-      ],
-      { color: 'orange', weight: 4 }
+      [[midLat, midLng],[realCoords.lat, realCoords.lng]],
+      { color:'orange', weight:4 }
     ).addTo(map);
 
-    // score it
+    // scoring
     const { distance, points, score:newScore } = await gameLogic.makeGuess({
       lat: guessLatLng.lat,
       lng: guessLatLng.lng
@@ -234,7 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
     finalScoreEl.textContent = newScore;
 
     if (round >= TOTAL) {
-      // end game
       endOv.classList.remove('hidden');
       controlsEl.classList.add('hidden');
       wrapperEl.classList.add('hidden');

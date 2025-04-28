@@ -1,17 +1,18 @@
 /* phonestyles.css
    =============================================================================
-   Phone-Mode Overrides (loaded only when “Phone Mode” is active)
-   • Ensures menu, header, overlays obey .hidden
-   • Floating Guess & Phone-Mode FABs
-   • Pixel-perfect mini-map in the bottom-right
+   “Phone Mode” Overrides — mobile-first, loaded only when toggled on
+   • Pixel-perfect mini-map in bottom-right
+   • Floating “Guess” & “Next Round” FABs
+   • Floating “Phone Mode” FAB
+   • Hides in-map controls & attribution
    ============================================================================= */
 
-/* ─── PRESERVE “.hidden” ────────────────────────────────────────────────────── */
-.hidden {
-  display: none !important;
+/* ─── SAFE-AREA ─────────────────────────────────────────────────────────────── */
+:root {
+  --safe-bottom: env(safe-area-inset-bottom, 1rem);
 }
 
-/* ─── MAIN MENU ─────────────────────────────────────────────────────────────── */
+/* ─── MAIN MENU OVERLAY ────────────────────────────────────────────────────── */
 .menu-screen {
   position: fixed !important;
   inset: 0 !important;
@@ -19,6 +20,7 @@
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
+  padding: 1rem !important;
   background: rgba(255,255,255,0.95) !important;
   backdrop-filter: blur(8px) !important;
   z-index: 1000 !important;
@@ -47,32 +49,19 @@
   font-size: 1.2rem !important;
 }
 
-/* ─── HEADER ───────────────────────────────────────────────────────────────── */
-.game-header {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  padding: 0.5rem 1rem !important;
-  background: rgba(255,255,255,0.9) !important;
-  backdrop-filter: blur(6px) !important;
-  z-index: 1000 !important;
-}
-.game-header .title { font-size: 1.3rem !important; }
-.status, .timer     { font-size: 0.9rem !important; }
-
-/* ─── PUSH GAME-VIEW BELOW HEADER ─────────────────────────────────────────── */
-#game-view {
-  margin-top: 3rem !important;
+/* ─── HIDE IN-MAP BUTTONS ──────────────────────────────────────────────────── */
+.map-controls-wrapper .controls {
+  display: none !important;
 }
 
-/* ─── FLOATING FABs ─────────────────────────────────────────────────────────── */
+/* ─── FLOATING FABs ────────────────────────────────────────────────────────── */
+#phone-mode-btn,
 #guess-btn,
-#phone-mode-btn {
+#next-btn {
   position: fixed !important;
-  bottom: 1rem !important;
-  width: 48px !important;
-  height: 48px !important;
+  bottom: calc(1rem + var(--safe-bottom)) !important;
+  width: 3.2rem !important;
+  height: 3.2rem !important;
   border-radius: 50% !important;
   background: #007bff !important;
   color: #fff !important;
@@ -85,28 +74,45 @@
   z-index: 1001 !important;
   transition: transform 0.2s !important;
 }
+#phone-mode-btn:hover,
 #guess-btn:hover,
-#phone-mode-btn:hover {
+#next-btn:hover {
   transform: translateY(-3px) !important;
 }
-#guess-btn      { left:  1rem !important; }
+
+/* positions */
 #phone-mode-btn { right: 1rem !important; }
+#guess-btn       { left:  1rem !important; }
+/* place Next between them */
+#next-btn {
+  left: calc(50% - 1.6rem) !important;  /* center horizontally */
+  background: #28a745 !important;
+}
+
+/* restore readable label */
+#next-btn {
+  width: auto !important;
+  padding: 0.6rem 1rem !important;
+  font-size: 0.9rem !important;
+  border-radius: 1.5rem !important;
+  height: auto !important;
+}
 
 /* ─── MINI-MAP WRAPPER ─────────────────────────────────────────────────────── */
 .map-controls-wrapper {
   position: fixed !important;
-  bottom: 1rem !important;
-  right:  1rem !important;
-  width:  200px !important;
+  bottom: calc(1rem + var(--safe-bottom)) !important;
+  right: 1rem !important;
+  width: 200px !important;
   height: 150px !important;
-  border-radius: 8px !important;
+  border-radius: 0.75rem !important;
   overflow: hidden !important;
   background: rgba(255,255,255,0.1) !important;
   box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
-  z-index:  1000 !important;
+  z-index: 900 !important;
 }
 .leaflet-map {
-  width:  100% !important;
+  width: 100% !important;
   height: 100% !important;
   transition: none !important;
 }
@@ -117,21 +123,22 @@
   display: none !important;
 }
 
-/* ─── LOADING & GAME-OVER OVERLAYS ─────────────────────────────────────────── */
+/* ─── HEADER & STATUS ───────────────────────────────────────────────────────── */
+.game-header {
+  padding: 0.5rem 1rem !important;
+  backdrop-filter: blur(6px) !important;
+  z-index: 500 !important;
+}
+.game-header .title { font-size: 1.3rem !important; }
+.status, .timer     { font-size: 0.9rem !important; }
+
+/* ─── LOADING & ENDGAME OVERLAYS ───────────────────────────────────────────── */
 .loading-overlay,
 .endgame-overlay {
-  position: fixed !important;
   inset: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
   background: rgba(0,0,0,0.85) !important;
-  z-index: 1000 !important;
   padding-top: 2rem !important;
-}
-.loading-overlay.hidden,
-.endgame-overlay.hidden {
-  display: none !important;
+  z-index: 950 !important;
 }
 .spinner {
   width: 36px !important;
@@ -141,11 +148,10 @@
 
 /* ─── GAME-OVER MODAL ───────────────────────────────────────────────────────── */
 .modal {
-  background: #fff !important;
   padding: 1.5rem !important;
   border-radius: 0.75rem !important;
   box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
-  z-index: 1001 !important;
+  z-index: 960 !important;
 }
 .modal .btn {
   padding: 0.75rem 1.5rem !important;
