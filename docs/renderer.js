@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ─── START GAME ──────────────────────────────────────────────────────────────
   startBtn.addEventListener('click', async () => {
-    // reset state
+    // reset everything
     round = 0;
     score = 0;
     gameLogic.score = 0;
@@ -81,30 +81,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (map) return;
     map = L.map('leaflet-map', {
       center: [31.8, 34.9],
-      zoom: 7,
+      zoom:    7,
       maxBounds: [[-90, -180], [90, 180]],
       maxBoundsViscosity: 1
     });
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
-      noWrap: true
+      noWrap:      true
     }).addTo(map);
 
     map.on('click', e => {
-      if (!canGuess) return;
-      guessBtn.disabled = false;
-      // ensure visible even when disabled
-      guessBtn.style.opacity = '1';
-      guessBtn.style.pointerEvents = 'auto';
-
+      // place or move the red "guess" marker
       if (guessMarker) {
         guessMarker.setLatLng(e.latlng);
       } else {
         guessMarker = L.marker(e.latlng, {
           icon: L.icon({
             iconUrl: './pin-red.png',
-            iconSize: [32, 32],
-            iconAnchor: [16, 32]
+            iconSize: [32,32],
+            iconAnchor: [16,32]
           }),
           draggable: true
         }).addTo(map);
@@ -112,6 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!canGuess) guessMarker.dragging.disable();
         });
       }
+      // now allow the Guess button to work
+      canGuess = true;
     });
   }
 
@@ -119,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateStatus(distance = null) {
     const base = `Round ${round}/${TOTAL} — Score: ${score}`;
     statusEl.textContent = distance != null
-      ? `${base} — Distance: ${distance}m`
+      ? `${base} — Distance: ${distance} m`
       : base;
     timerEl.textContent = `${timeLeft}s`;
   }
@@ -141,17 +138,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── NEXT ROUND ─────────────────────────────────────────────────────────────
   async function nextRound() {
     clearInterval(countdownId);
-    // clear previous markers/lines
+    // remove previous markers & polylines
     [guessMarker, realMarker, line1, line2].forEach(l => l && map.removeLayer(l));
     guessMarker = realMarker = line1 = line2 = null;
 
-    // reset Guess button
-    guessBtn.disabled = true;
-    guessBtn.style.opacity = '1';
-    guessBtn.style.pointerEvents = 'auto';
-
+    canGuess = false;
     nextBtn.classList.add('hidden');
-    canGuess = true;
 
     round++;
     startTimer();
@@ -161,9 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const loc = await gameLogic.startNewRound(regionSelect.value);
       realCoords = { lat: loc.lat, lng: loc.lng };
 
-      if (gameLogic.region !== 'All Israel' && gameLogic.region !== 'Earth [HARD]') {
+      if (![ 'All Israel', 'Earth [HARD]' ].includes(gameLogic.region)) {
         const bb = REGION_BBOXES[gameLogic.region];
-        map.fitBounds([[bb.minLat, bb.minLng], [bb.maxLat, bb.maxLng]]);
+        map.fitBounds([[bb.minLat, bb.minLng],[bb.maxLat, bb.maxLng]]);
       }
 
       updateStatus();
@@ -183,57 +175,45 @@ document.addEventListener('DOMContentLoaded', () => {
     canGuess = false;
     clearInterval(countdownId);
 
-    // get guess coords
     const guessLatLng = guessMarker
       ? guessMarker.getLatLng()
       : map.getCenter();
 
-    // show real marker
+    // blue "real" marker
     realMarker = L.marker(
       [realCoords.lat, realCoords.lng],
-      {
-        icon: L.icon({
+      { icon: L.icon({
           iconUrl: './pin-blue.png',
-          iconSize: [32, 32],
-          iconAnchor: [16, 32]
+          iconSize: [32,32],
+          iconAnchor: [16,32]
         })
       }
     ).addTo(map);
 
-    // midpoint
-    const midLat = (guessLatLng.lat + realCoords.lat) / 2;
-    const midLng = (guessLatLng.lng + realCoords.lng) / 2;
+    // draw black + orange segments
+    const midLat = (guessLatLng.lat + realCoords.lat)/2;
+    const midLng = (guessLatLng.lng + realCoords.lng)/2;
 
-    // black segment
     line1 = L.polyline(
-      [
-        [guessLatLng.lat, guessLatLng.lng],
-        [midLat, midLng]
-      ],
-      { color: 'black', weight: 4 }
+      [[guessLatLng.lat, guessLatLng.lng],[midLat, midLng]],
+      { color:'black', weight:4 }
     ).addTo(map);
 
-    // orange segment
     line2 = L.polyline(
-      [
-        [midLat, midLng],
-        [realCoords.lat, realCoords.lng]
-      ],
-      { color: 'orange', weight: 4 }
+      [[midLat, midLng],[realCoords.lat, realCoords.lng]],
+      { color:'orange', weight:4 }
     ).addTo(map);
 
-    // score it
-    const { distance, points, score: newScore } = await gameLogic.makeGuess({
+    // scoring
+    const { distance, points, score:newScore } = await gameLogic.makeGuess({
       lat: guessLatLng.lat,
       lng: guessLatLng.lng
     });
-
     score = newScore;
     updateStatus(distance);
     finalScoreEl.textContent = newScore;
 
     if (round >= TOTAL) {
-      // end game
       endOv.classList.remove('hidden');
       controlsEl.classList.add('hidden');
       wrapperEl.classList.add('hidden');
@@ -245,14 +225,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── RESTART (in-app reset) ─────────────────────────────────────────────────
   document.getElementById('restart-btn')
     .addEventListener('click', () => {
-      // show map controls again
+      endOv.classList.add('hidden');
       controlsEl.classList.remove('hidden');
       wrapperEl.classList.remove('hidden');
 
-      // hide endgame overlay
-      endOv.classList.add('hidden');
-
-      // reset state
       round = 0;
       score = 0;
       gameLogic.score = 0;
@@ -260,7 +236,6 @@ document.addEventListener('DOMContentLoaded', () => {
       updateStatus();
       finalScoreEl.textContent = '0';
 
-      // back to menu
       menuScreen.classList.remove('hidden');
       gameContainer.classList.add('hidden');
     });
