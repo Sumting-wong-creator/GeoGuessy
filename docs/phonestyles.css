@@ -1,23 +1,53 @@
 /* phonestyles.css
    =============================================================================
-   “Phone Mode” Overrides — loaded only when toggled on
-   • Keeps .hidden overlays hidden
-   • Floating “Guess” & “Phone Mode” FABs
-   • Pixel-perfect mini-map in bottom-right
+   Phone-Mode Overrides (loaded only when “Phone Mode” is active)
+   • Ensures menu, header, overlays obey .hidden
+   • Floating Guess & Phone-Mode FABs
+   • Pixel-perfect mini-map in the bottom-right
    ============================================================================= */
 
-/* ─── GLOBAL / SAFE-AREA ────────────────────────────────────────────────────── */
-:root {
-  /* ensures FABs and map sit above the iPhone home indicator */
-  --safe-bottom: env(safe-area-inset-bottom, 1rem);
-}
-
-/* ─── ENSURE .hidden STILL HIDES EVERYTHING ────────────────────────────────── */
+/* ─── PRESERVE “.hidden” ────────────────────────────────────────────────────── */
 .hidden {
   display: none !important;
 }
 
-/* ─── FIXED HEADER ─────────────────────────────────────────────────────────── */
+/* ─── MAIN MENU ─────────────────────────────────────────────────────────────── */
+.menu-screen {
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(255,255,255,0.95) !important;
+  backdrop-filter: blur(8px) !important;
+  z-index: 1000 !important;
+}
+.menu-screen.hidden {
+  display: none !important;
+}
+.menu-title {
+  font-size: 2.5rem !important;
+  margin: 0 !important;
+  text-align: center !important;
+}
+.menu-controls {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.75rem !important;
+  align-items: center !important;
+}
+.menu-controls select {
+  padding: 0.5rem !important;
+  font-size: 1rem !important;
+  min-width: 6rem !important;
+}
+#start-btn {
+  padding: 1rem 1.5rem !important;
+  font-size: 1.2rem !important;
+}
+
+/* ─── HEADER ───────────────────────────────────────────────────────────────── */
 .game-header {
   position: fixed !important;
   top: 0 !important;
@@ -26,21 +56,21 @@
   padding: 0.5rem 1rem !important;
   background: rgba(255,255,255,0.9) !important;
   backdrop-filter: blur(6px) !important;
-  z-index: 10000 !important;
+  z-index: 1000 !important;
 }
 .game-header .title { font-size: 1.3rem !important; }
 .status, .timer     { font-size: 0.9rem !important; }
 
-/* make room under header */
+/* ─── PUSH GAME-VIEW BELOW HEADER ─────────────────────────────────────────── */
 #game-view {
-  padding-top: 3rem !important;
+  margin-top: 3rem !important;
 }
 
 /* ─── FLOATING FABs ─────────────────────────────────────────────────────────── */
 #guess-btn,
 #phone-mode-btn {
   position: fixed !important;
-  bottom: calc(1rem + var(--safe-bottom)) !important;
+  bottom: 1rem !important;
   width: 48px !important;
   height: 48px !important;
   border-radius: 50% !important;
@@ -52,31 +82,31 @@
   justify-content: center !important;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
   cursor: pointer !important;
-  z-index: 10001 !important;
+  z-index: 1001 !important;
   transition: transform 0.2s !important;
 }
 #guess-btn:hover,
 #phone-mode-btn:hover {
   transform: translateY(-3px) !important;
 }
-#guess-btn       { left:  1rem !important; }
-#phone-mode-btn  { right: 1rem !important; }
+#guess-btn      { left:  1rem !important; }
+#phone-mode-btn { right: 1rem !important; }
 
 /* ─── MINI-MAP WRAPPER ─────────────────────────────────────────────────────── */
 .map-controls-wrapper {
   position: fixed !important;
-  bottom: calc(1rem + var(--safe-bottom)) !important;
-  right: 1rem !important;
-  width: 200px !important;    /* explicit pixel width */
-  height: 150px !important;   /* explicit pixel height */
-  border-radius: 0.75rem !important;
+  bottom: 1rem !important;
+  right:  1rem !important;
+  width:  200px !important;
+  height: 150px !important;
+  border-radius: 8px !important;
   overflow: hidden !important;
   background: rgba(255,255,255,0.1) !important;
   box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
-  z-index: 10000 !important;
+  z-index:  1000 !important;
 }
 .leaflet-map {
-  width: 100% !important;
+  width:  100% !important;
   height: 100% !important;
   transition: none !important;
 }
@@ -87,18 +117,17 @@
   display: none !important;
 }
 
-/* ─── GAME-OVER & LOADING OVERLAYS ─────────────────────────────────────────── */
+/* ─── LOADING & GAME-OVER OVERLAYS ─────────────────────────────────────────── */
 .loading-overlay,
 .endgame-overlay {
   position: fixed !important;
   inset: 0 !important;
-  background: rgba(0,0,0,0.85) !important;
   display: flex !important;
-  flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
+  background: rgba(0,0,0,0.85) !important;
+  z-index: 1000 !important;
   padding-top: 2rem !important;
-  z-index: 10002 !important;
 }
 .loading-overlay.hidden,
 .endgame-overlay.hidden {
@@ -116,7 +145,7 @@
   padding: 1.5rem !important;
   border-radius: 0.75rem !important;
   box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
-  z-index: 10003 !important;
+  z-index: 1001 !important;
 }
 .modal .btn {
   padding: 0.75rem 1.5rem !important;

@@ -28,6 +28,16 @@ document.addEventListener('DOMContentLoaded', () => {
   let round = 0, score = 0, timeLeft = ROUND_TIME, canGuess = false;
   let guessMarker, realMarker, line1, line2, realCoords;
 
+  // ─── INITIAL STATE ───────────────────────────────────────────────────────────
+  // ensure both controls & mini-map start hidden until "Start Game"
+  controlsEl.classList.add('hidden');
+  wrapperEl.classList.add('hidden');
+
+  // disable Guess FAB initially
+  guessBtn.disabled = true;
+  guessBtn.style.opacity = '0.3';
+  guessBtn.style.pointerEvents = 'none';
+
   // ─── PHONE MODE & ORIENTATION LOCK ──────────────────────────────────────────
   phoneBtn.addEventListener('click', async () => {
     const turningOn = phoneSheet.disabled;
@@ -53,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ─── START GAME ──────────────────────────────────────────────────────────────
   startBtn.addEventListener('click', async () => {
-    // reset everything
+    // reset state
     round = 0;
     score = 0;
     gameLogic.score = 0;
@@ -61,8 +71,11 @@ document.addEventListener('DOMContentLoaded', () => {
     updateStatus();
     finalScoreEl.textContent = '0';
 
+    // swap screens
     menuScreen.classList.add('hidden');
     gameContainer.classList.remove('hidden');
+
+    // hide endgame overlay & show map controls
     endOv.classList.add('hidden');
     controlsEl.classList.remove('hidden');
     wrapperEl.classList.remove('hidden');
@@ -79,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── SETUP LEAFLET ───────────────────────────────────────────────────────────
   function setupLeaflet() {
     if (map) return;
+
     map = L.map('leaflet-map', {
       center: [31.8, 34.9],
       zoom:    7,
@@ -91,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }).addTo(map);
 
     map.on('click', e => {
-      // place or move the red "guess" marker
+      // place / move the red guess marker
       if (guessMarker) {
         guessMarker.setLatLng(e.latlng);
       } else {
@@ -107,8 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!canGuess) guessMarker.dragging.disable();
         });
       }
-      // now allow the Guess button to work
+
+      // enable the Guess FAB
       canGuess = true;
+      guessBtn.disabled = false;
+      guessBtn.style.opacity = '1';
+      guessBtn.style.pointerEvents = 'auto';
     });
   }
 
@@ -138,11 +156,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── NEXT ROUND ─────────────────────────────────────────────────────────────
   async function nextRound() {
     clearInterval(countdownId);
-    // remove previous markers & polylines
+
+    // clear previous markers & lines
     [guessMarker, realMarker, line1, line2].forEach(l => l && map.removeLayer(l));
     guessMarker = realMarker = line1 = line2 = null;
 
+    // reset Guess FAB
     canGuess = false;
+    guessBtn.disabled = true;
+    guessBtn.style.opacity = '0.3';
+    guessBtn.style.pointerEvents = 'none';
+
     nextBtn.classList.add('hidden');
 
     round++;
@@ -169,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ─── GUESS + DUAL-COLORED LINE + SCORING ────────────────────────────────────
+  // ─── GUESS + LINES + SCORING ────────────────────────────────────────────────
   async function doGuess() {
     if (!canGuess) return;
     canGuess = false;
@@ -179,10 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
       ? guessMarker.getLatLng()
       : map.getCenter();
 
-    // blue "real" marker
+    // blue real‐location marker
     realMarker = L.marker(
-      [realCoords.lat, realCoords.lng],
-      { icon: L.icon({
+      [ realCoords.lat, realCoords.lng ],
+      {
+        icon: L.icon({
           iconUrl: './pin-blue.png',
           iconSize: [32,32],
           iconAnchor: [16,32]
@@ -195,17 +220,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const midLng = (guessLatLng.lng + realCoords.lng)/2;
 
     line1 = L.polyline(
-      [[guessLatLng.lat, guessLatLng.lng],[midLat, midLng]],
+      [[guessLatLng.lat,guessLatLng.lng],[midLat,midLng]],
       { color:'black', weight:4 }
     ).addTo(map);
 
     line2 = L.polyline(
-      [[midLat, midLng],[realCoords.lat, realCoords.lng]],
+      [[midLat,midLng],[realCoords.lat,realCoords.lng]],
       { color:'orange', weight:4 }
     ).addTo(map);
 
     // scoring
-    const { distance, points, score:newScore } = await gameLogic.makeGuess({
+    const { distance, points, score: newScore } = await gameLogic.makeGuess({
       lat: guessLatLng.lat,
       lng: guessLatLng.lng
     });
@@ -214,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
     finalScoreEl.textContent = newScore;
 
     if (round >= TOTAL) {
+      // show endgame screen, hide controls
       endOv.classList.remove('hidden');
       controlsEl.classList.add('hidden');
       wrapperEl.classList.add('hidden');
