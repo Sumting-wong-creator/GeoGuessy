@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const endOv         = document.getElementById('endgame-overlay');
   const finalScoreEl  = document.getElementById('final-score');
   const darkToggle    = document.getElementById('dark-toggle');
+  const controlsEl    = document.getElementById('controls');
+  const wrapperEl     = document.querySelector('.map-controls-wrapper');
 
   const TOTAL      = 5;
   const ROUND_TIME = 60;
@@ -54,12 +56,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // reset state
     round = 0;
     score = 0;
+    gameLogic.score = 0;
     updateStatus();
     finalScoreEl.textContent = '0';
 
     menuScreen.classList.add('hidden');
     gameContainer.classList.remove('hidden');
     endOv.classList.add('hidden');
+    controlsEl.classList.remove('hidden');
+    wrapperEl.classList.remove('hidden');
     setupLeaflet();
     await gameLogic.initialize();
     await nextRound();
@@ -205,13 +210,15 @@ document.addEventListener('DOMContentLoaded', () => {
       lng: guessLatLng.lng
     });
 
-    score = newScore;                         // update local score
+    score = newScore;
     updateStatus(distance);
+    finalScoreEl.textContent = newScore;
 
     if (round >= TOTAL) {
-      // game over
-      finalScoreEl.textContent = newScore;
+      // end game
       endOv.classList.remove('hidden');
+      controlsEl.classList.add('hidden');
+      wrapperEl.classList.add('hidden');
     } else {
       nextBtn.classList.remove('hidden');
     }
@@ -220,11 +227,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── RESTART (in-app reset) ─────────────────────────────────────────────────
   document.getElementById('restart-btn')
     .addEventListener('click', () => {
-      // hide overlays, reset state
+      // hide overlays
       endOv.classList.add('hidden');
-      round = 0; score = 0;
-      gameLogic.score = 0;  // reset backend too
+      controlsEl.classList.remove('hidden');
+      wrapperEl.classList.remove('hidden');
+
+      // reset state
+      round = 0;
+      score = 0;
+      gameLogic.score = 0;
       updateStatus();
+      finalScoreEl.textContent = '0';
+
+      // back to menu
       menuScreen.classList.remove('hidden');
       gameContainer.classList.add('hidden');
     });
