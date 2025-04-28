@@ -1,152 +1,159 @@
 /* phonestyles.css
-   ─────────────────────────────────────────────────────────────────────────────
-   High-effort phone-layout overrides for iPhone landscape (max-device-width: 812px).
-   Adds safe-area support, polished FABs, smooth transitions, shadows, and responsive tweaks.
-*/
+   =============================================================================
+   Ultra‐polished iPhone Landscape Overrides
+   Applies when Phone Mode is toggled ON (max-device-width: 812px).
+   • Fixed-position FABs (Guess, Phone Mode)
+   • Viewport-bottom-right Leaflet mini-map
+   • Safe-area support, backdrop-blurs, shadows
+   • Smooth hover/active transitions
+   ============================================================================= */
 
-/* ─── GLOBAL VARIABLES & SAFE-AREA ──────────────────────────────────────────── */
+/* ─── GLOBAL VARIABLES & SAFE-AREA ───────────────────────────────────────────── */
 :root {
-    /* Safe-area inset for bottom home indicator */
-    --safe-bottom: env(safe-area-inset-bottom, 1rem);
+    /* Safe-area inset (home indicator) */
+    --safe-inset-bottom:    env(safe-area-inset-bottom, 1rem);
   
-    /* Layout spacing */
-    --phone-gap:               1rem;
-    --phone-gap-sm:            0.75rem;
+    /* Gaps */
+    --gap-md:               1rem;
+    --gap-sm:               0.75rem;
   
-    /* Font sizes */
-    --phone-title-size:        2.5rem;
-    --phone-control-font:      1.2rem;
-    --phone-header-font:       1.3rem;
-    --phone-status-font:       0.9rem;
+    /* Font scales */
+    --font-title:           2.5rem;
+    --font-fab:             1rem;
+    --font-header:          1.3rem;
+    --font-status:          0.9rem;
   
-    /* Map sizing */
-    --phone-map-width:         80vw;
-    --phone-map-height:        40vh;
-    --phone-map-offset-x:      5vw;
-    --phone-map-offset-y:      calc(5vh + var(--safe-bottom));
+    /* FAB dimensions */
+    --fab-size:             3.5rem;
+    --fab-radius:           50%;
+    --fab-shadow:           0 4px 12px rgba(0,0,0,0.3);
   
-    /* FAB sizing */
-    --fab-size:                3.5rem;
-    --fab-padding:             0.75rem;
-    --fab-font:                1rem;
-    --fab-shadow:              0 4px 12px rgba(0,0,0,0.3);
+    /* Map wrapper */
+    --map-width:            80vw;
+    --map-height:           40vh;
+    --map-offset-x:         5vw;
+    --map-offset-y:         calc(5vh + var(--safe-inset-bottom));
+  
+    /* Transitions */
+    --trans-fast:           0.2s ease-in-out;
+    --trans-base:           0.3s ease;
   }
   
-  /* ─── APPLY ONLY ON PHONE LANDSCAPE ────────────────────────────────────────── */
+  /* ─── PHONE-ONLY LANDSCAPE MEDIA QUERY ──────────────────────────────────────── */
   @media only screen 
     and (max-device-width: 812px) 
     and (orientation: landscape) {
   
-    /* ─── BODY SAFE-AREA PADDING ─────────────────────────────────────────────── */
+    /* ── SAFE-AREA ON BODY ───────────────────────────────────────────────────── */
     body {
-      padding-bottom: var(--safe-bottom) !important;
+      padding-bottom: var(--safe-inset-bottom) !important;
     }
   
-    /* ─── MENU RE-FLOW & STYLING ─────────────────────────────────────────────── */
+    /* ── MENU SCREEN RE-FLOW ─────────────────────────────────────────────────── */
     .menu-screen {
       flex-direction: row !important;
       justify-content: space-between !important;
       align-items: center !important;
-      padding: var(--phone-gap) !important;
-      gap: var(--phone-gap) !important;
-      background: rgba(255,255,255,0.8) !important;
-      backdrop-filter: saturate(180%) blur(10px);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      padding: var(--gap-md) !important;
+      background: rgba(255,255,255,0.85) !important;
+      backdrop-filter: saturate(180%) blur(8px) !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+      gap: var(--gap-md) !important;
     }
     .menu-title {
-      font-size: var(--phone-title-size) !important;
-      color: #333 !important;
-      margin: 0 !important;
       flex: 1 0 auto !important;
       text-align: center !important;
+      font-size: var(--font-title) !important;
+      margin: 0 !important;
     }
     .menu-controls {
       flex-direction: column !important;
-      gap: var(--phone-gap-sm) !important;
+      gap: var(--gap-sm) !important;
       align-items: center !important;
     }
-    .menu-controls select {
-      width: auto !important;
-      min-width: 8rem !important;
-    }
   
-    /* ─── FAB BUTTON STYLING ─────────────────────────────────────────────────── */
-    #phone-mode-btn,
-    #guess-btn {
+    /* ── FIXED FAB BUTTONS ───────────────────────────────────────────────────── */
+    #guess-btn,
+    #phone-mode-btn {
       position: fixed !important;
       width: var(--fab-size) !important;
       height: var(--fab-size) !important;
-      padding: var(--fab-padding) !important;
-      font-size: var(--fab-font) !important;
-      border-radius: 50% !important;
+      padding: 0 !important;
+      font-size: var(--font-fab) !important;
+      border-radius: var(--fab-radius) !important;
+      background: var(--blue) !important;
+      color: #fff !important;
       box-shadow: var(--fab-shadow) !important;
+      border: none !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      background: var(--blue) !important;
-      color: #fff !important;
-      border: none !important;
       cursor: pointer !important;
-      transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+      transition: transform var(--trans-fast), box-shadow var(--trans-fast) !important;
       z-index: 1000 !important;
     }
-    #phone-mode-btn:hover,
-    #guess-btn:hover {
+    #guess-btn {
+      left: var(--gap-md) !important;
+      bottom: var(--safe-inset-bottom) !important;
+    }
+    #phone-mode-btn {
+      right: var(--gap-md) !important;
+      bottom: var(--safe-inset-bottom) !important;
+    }
+    #guess-btn:hover,
+    #phone-mode-btn:hover {
       transform: translateY(-4px) !important;
       box-shadow: 0 6px 16px rgba(0,0,0,0.35) !important;
     }
-  
-    /* Position FABs at safe corners */
-    #guess-btn {
-      left: var(--phone-gap) !important;
-      bottom: var(--safe-bottom) !important;
-    }
-    #phone-mode-btn {
-      right: var(--phone-gap) !important;
-      bottom: var(--safe-bottom) !important;
+    #guess-btn:active,
+    #phone-mode-btn:active {
+      transform: translateY(-2px) scale(0.98) !important;
     }
   
-    /* ─── MAP CONTROLS WRAPPER ────────────────────────────────────────────────── */
+    /* ── FIXED MAP WRAPPER ───────────────────────────────────────────────────── */
     .map-controls-wrapper {
-      width: var(--phone-map-width) !important;
-      height: var(--phone-map-height) !important;
-      right: var(--phone-map-offset-x) !important;
-      bottom: var(--phone-map-offset-y) !important;
-      transform: none !important;
+      position: fixed !important;
+      right: var(--map-offset-x) !important;
+      bottom: var(--map-offset-y) !important;
+      width: var(--map-width) !important;
+      height: var(--map-height) !important;
       box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
-      border-radius: 12px !important;
+      border-radius: 0.75rem !important;
       overflow: hidden !important;
+      backdrop-filter: blur(4px) !important;
+      z-index: 900 !important;
+      transform: none !important;
     }
   
-    /* ─── LEAFLET MAP HOVER EFFECT ───────────────────────────────────────────── */
+    /* ── MINI-MAP SHRINK & HOVER EFFECT ───────────────────────────────────────── */
     .leaflet-map {
-      width: 100% !important;
+      width: 50% !important;
       height: 100% !important;
-      transition: transform 0.2s ease-in-out !important;
+      transition: transform var(--trans-fast) !important;
     }
     .leaflet-map:hover {
       transform: scale(1.1) !important;
+      transform-origin: center center !important;
     }
   
-    /* ─── GAME HEADER & STATUS ───────────────────────────────────────────────── */
+    /* ── HEADER & STATUS TYPOGRAPHY ──────────────────────────────────────────── */
     .game-header {
-      padding: 0.5rem 1rem !important;
       backdrop-filter: blur(6px) !important;
+      padding: 0.5rem var(--gap-md) !important;
     }
     .game-header .title {
-      font-size: var(--phone-header-font) !important;
+      font-size: var(--font-header) !important;
     }
     .status, .timer {
-      font-size: var(--phone-status-font) !important;
+      font-size: var(--font-status) !important;
     }
   
-    /* ─── LOADING & ENDGAME OVERLAY ─────────────────────────────────────────── */
+    /* ── LOADING & ENDGAME OVERLAY ───────────────────────────────────────────── */
     .loading-overlay,
     .endgame-overlay {
-      inset: 0 !important;
-      padding-top: calc(var(--phone-gap) * 2) !important;
-      font-size: 1.1rem !important;
       background: rgba(0,0,0,0.85) !important;
+      padding-top: calc(var(--gap-md) * 2) !important;
+      font-size: var(--font-base) !important;
     }
     .spinner {
       width: 36px !important;
@@ -154,10 +161,10 @@
       border-width: 4px !important;
     }
   
-    /* ─── MODAL (GAME OVER) ───────────────────────────────────────────────────── */
+    /* ── MODAL (GAME OVER) ───────────────────────────────────────────────────── */
     .modal {
       padding: 1.5rem !important;
-      border-radius: 14px !important;
+      border-radius: 0.75rem !important;
       box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
     }
     .modal .btn {
