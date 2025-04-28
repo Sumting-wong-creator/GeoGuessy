@@ -1,10 +1,9 @@
 /* phonestyles.css
    =============================================================================
-   “Phone Mode” Overrides — mobile‐first, loaded only when toggled on
-   • Unconditionally applies whenever this stylesheet is enabled
-   • Pixel‐perfect sizing for mini‐map in bottom right
-   • Floating “Guess” & “Phone Mode” buttons
-   • Ensures .hidden works on the main menu
+   “Phone Mode” Overrides — mobile-first, loaded only when toggled on
+   • Pixel-perfect mini-map in bottom right
+   • Floating “Guess” & “Phone Mode” FABs
+   • Hides attribution, keeps header & overlays legible
    ============================================================================= */
 
 /* ─── SAFE-AREA ─────────────────────────────────────────────────────────────── */
@@ -94,7 +93,13 @@
   transition: none !important;
 }
 
-/* ─── HEADER & STATUS (stay visible) ───────────────────────────────────────── */
+/* ─── HIDE ATTRIBUTION ─────────────────────────────────────────────────────── */
+.leaflet-control-container .leaflet-control-attribution,
+.leaflet-control-attribution {
+  display: none !important;
+}
+
+/* ─── HEADER & STATUS ───────────────────────────────────────────────────────── */
 .game-header {
   padding: 0.5rem 1rem !important;
   backdrop-filter: blur(6px) !important;
