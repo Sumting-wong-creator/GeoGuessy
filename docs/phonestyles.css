@@ -1,10 +1,9 @@
 /* phonestyles.css
    =============================================================================
    Phone Mode Overrides for iPhone Landscape (max-device-width: 812px)
-   • Safe-area support (home indicator)
-   • Fixed-position FABs (Guess & Phone Mode)
-   • Fixed Leaflet mini-map at viewport bottom-right
-   • Polished backdrop-blur, shadows, hover effects, responsive typography
+   • Forces mini-map into bottom-right viewport corner
+   • Disables wrapper hover/pop-out entirely
+   • Retains polished FABs, safe-area inset, shadows, typography
    ============================================================================= */
 
 /* ─── GLOBAL VARIABLES & SAFE-AREA ───────────────────────────────────────────── */
@@ -25,7 +24,7 @@
   /* FAB dimensions */
   --fab-size:             3.5rem;
   --fab-radius:           50%;
-  --fab-shadow-light:     0 4px 12px rgba(0, 0, 0, 0.3);
+  --fab-shadow-light:     0 4px 12px rgba(0,0,0,0.3);
 
   /* map wrapper */
   --map-width:            80vw;
@@ -42,7 +41,7 @@
   and (max-device-width: 812px) 
   and (orientation: landscape) {
 
-  /* ── BODY SAFE-AREA PAD ───────────────────────────────────────────────────── */
+  /* ── BODY SAFE-AREA PADDING ───────────────────────────────────────────────── */
   body {
     padding-bottom: var(--safe-inset-bottom) !important;
   }
@@ -118,11 +117,13 @@
     transform: translateY(-2px) scale(0.98) !important;
   }
 
-  /* ── FIXED MAP WRAPPER ───────────────────────────────────────────────────── */
+  /* ── FIXED MAP WRAPPER (BOTTOM-RIGHT) ────────────────────────────────────── */
   .map-controls-wrapper {
     position: fixed !important;
     right: var(--map-offset-x) !important;
     bottom: var(--map-offset-y) !important;
+    left: auto !important;
+    top: auto !important;
     width: var(--map-width) !important;
     height: var(--map-height) !important;
     border-radius: 0.75rem !important;
@@ -132,19 +133,23 @@
     z-index: 900 !important;
     transform: none !important;
   }
+  /* disable default hover scale on wrapper */
+  .map-controls-wrapper:hover {
+    transform: none !important;
+  }
 
   /* ── MINI-MAP HOVER EFFECT ────────────────────────────────────────────────── */
   .leaflet-map {
-    width: 50% !important;
+    width: 100% !important;
     height: 100% !important;
     transition: transform var(--trans-fast) !important;
   }
   .leaflet-map:hover {
-    transform: scale(1.1) !important;
+    transform: scale(1.05) !important;
     transform-origin: center center !important;
   }
 
-  /* ── HEADER & STATUS ──────────────────────────────────────────────────────── */
+  /* ── GAME HEADER & STATUS ────────────────────────────────────────────────── */
   .game-header {
     backdrop-filter: blur(6px) !important;
     padding: 0.5rem var(--gap-md) !important;
