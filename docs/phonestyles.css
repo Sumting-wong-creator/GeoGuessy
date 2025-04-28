@@ -1,7 +1,7 @@
 /* phonestyles.css
    =============================================================================
    “Phone Mode” Overrides — mobile-first, loaded only when toggled on
-   • Pixel-perfect mini-map in bottom right
+   • Pixel-perfect mini-map in bottom-right
    • Floating “Guess” & “Phone Mode” FABs
    • Hides attribution, keeps header & overlays legible
    ============================================================================= */
@@ -11,10 +11,10 @@
   --safe-bottom: env(safe-area-inset-bottom, 1rem);
 }
 
-/* ─── MAIN MENU OVERLAY ────────────────────────────────────────────────────── */
+/* ─── MAIN MENU OVERLAY ───────────────────────────────────────────────────── */
 .menu-screen {
   position: fixed !important;
-  top: 0; left: 0; right: 0; bottom: 0 !important;
+  inset: 0 !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
@@ -79,8 +79,8 @@
   position: fixed !important;
   bottom: calc(1rem + var(--safe-bottom)) !important;
   right: 1rem !important;
-  width: 200px !important;   /* explicit pixel sizing */
-  height: 150px !important;  /* 40% lower than default */
+  width: 200px !important;   /* exact pixel width */
+  height: 150px !important;  /* 40% shorter than default */
   border-radius: 0.75rem !important;
   overflow: hidden !important;
   background: rgba(255,255,255,0.1) !important;
