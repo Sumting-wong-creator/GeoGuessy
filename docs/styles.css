@@ -1,73 +1,90 @@
-/* ─── LAYOUT FIXES (MUST BE FIRST) ───────────────────────────────────────────── */
+/* ──────────────────────────────────────────────────────────────────────────────
+   styles.css — Polished Core & Phone‐Landscape Overrides
+   ──────────────────────────────────────────────────────────────────────────────
+   - Base reset & layout
+   - Core components (menu, header, game view, controls, overlays)
+   - Variables & theming
+   - iPhone landscape overrides (max-device-width:812px)
+   ────────────────────────────────────────────────────────────────────────────── */
+
+/* ─── GLOBAL RESET & LAYOUT ─────────────────────────────────────────────────── */
 html, body {
   margin: 0;
   padding: 0;
+  width: 100%;
   height: 100%;
   overflow: hidden;
 }
-
 #game-container {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
-
 .game-view {
   position: relative;
   flex: 1 1 auto;
-  min-height: 0; /* critical in flex so children can stretch */
+  min-height: 0; /* allow flex children to shrink */
 }
 
-/* ─── MAPILLARY VIEWER ───────────────────────────────────────────────────────── */
-#mapillary-viewer {
-  position: absolute;
-  top:    0;
-  right:  0;
-  bottom: 0;
-  left:   0;
-}
-
-/* ─── HIDE / SHOW ─────────────────────────────────────────────────────────────── */
-.hidden {
-  display: none !important;
-}
-
-/* ─── VARIABLES ───────────────────────────────────────────────────────────────── */
+/* ─── THEME VARIABLES ───────────────────────────────────────────────────────── */
 :root {
-  --blue:        #007bff;
-  --blue-75:     rgba(0,123,255,0.75);
-  --light-bg:    #ffffff;
-  --dark-bg:     #1e1e1e;
-  --text-light:  #ffffff;
-  --text-dark:   #000000;
-  --transition:  0.3s ease;
+  /* Colors */
+  --primary:        #007bff;
+  --primary-75:     rgba(0,123,255,0.75);
+  --secondary:      #6c757d;
+  --success:        #28a745;
+  --bg-light:       #ffffff;
+  --bg-dark:        #1e1e1e;
+  --text-dark:      #000000;
+  --text-light:     #ffffff;
+
+  /* Spacing & sizing */
+  --gap:            1rem;
+  --gap-sm:         0.5rem;
+  --radius:         0.5rem;
+  --transition:     0.3s ease;
+
+  /* Fonts */
+  --font-base:      'Segoe UI', sans-serif;
+  --font-size:      1rem;
+  --font-sm:        0.9rem;
+  --font-lg:        1.2rem;
+  --font-xl:        1.5rem;
+
+  /* Button */
+  --btn-padding:    0.5rem 1rem;
+  --btn-radius:     var(--radius);
 }
 
-/* ─── BASE ───────────────────────────────────────────────────────────────────── */
+/* ─── BASE STYLES ───────────────────────────────────────────────────────────── */
 body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: var(--light-bg);
+  font-family: var(--font-base);
+  font-size: var(--font-size);
+  background: var(--bg-light);
   color: var(--text-dark);
   transition: background var(--transition), color var(--transition);
 }
 body.dark-mode {
-  background: var(--dark-bg);
+  background: var(--bg-dark);
   color: var(--text-light);
 }
+.hidden { display: none !important; }
 
-/* ─── MENU SCREEN ────────────────────────────────────────────────────────────── */
+/* ─── MENU SCREEN ───────────────────────────────────────────────────────────── */
 .menu-screen {
   position: fixed;
   inset: 0;
-  background: var(--light-bg);
+  background: var(--bg-light);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: var(--gap);
   z-index: 1000;
+  transition: background var(--transition);
+}
+body.dark-mode .menu-screen {
+  background: var(--bg-dark);
 }
 .menu-title {
   font-size: 3rem;
@@ -75,42 +92,41 @@ body.dark-mode {
 }
 .menu-controls {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--gap-sm);
   align-items: center;
 }
 .menu-controls select {
   padding: 0.75rem;
-  font-size: 1.1rem;
+  font-size: var(--font-base);
 }
 
-/* ─── GAME HEADER ─────────────────────────────────────────────────────────────── */
+/* ─── GAME HEADER ───────────────────────────────────────────────────────────── */
 .game-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.5rem 1rem;
-  background: var(--light-bg);
+  gap: var(--gap);
+  padding: 0.5rem var(--gap);
+  background: var(--bg-light);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  z-index: 200;
   transition: background var(--transition);
+  z-index: 200;
 }
 body.dark-mode .game-header {
-  background: var(--dark-bg);
+  background: var(--bg-dark);
 }
 .game-header .title {
-  font-size: 1.5rem;
+  font-size: var(--font-xl);
   font-weight: bold;
 }
 .status, .timer {
-  font-size: 1rem;
+  font-size: var(--font-base);
 }
-.timer {
-  margin-left: auto;
-}
+.timer { margin-left: auto; }
 
-/* ─── MAIN GAME VIEW ─────────────────────────────────────────────────────────── */
-.game-view {
-  background: #000;
+/* ─── MAPILLARY VIEWER ───────────────────────────────────────────────────────── */
+#mapillary-viewer {
+  position: absolute;
+  inset: 0;
 }
 
 /* ─── LOADING OVERLAY ────────────────────────────────────────────────────────── */
@@ -126,35 +142,31 @@ body.dark-mode .game-header {
   font-size: 1.2rem;
   z-index: 100;
 }
-.loading-overlay.hidden {
-  display: none;
-}
+.loading-overlay.hidden { display: none; }
 .spinner {
   width: 50px;
   height: 50px;
-  border: 6px solid rgba(0,123,255,0.25);
-  border-top-color: var(--blue);
+  border: 6px solid rgba(var(--primary-rgb,0,123,255),0.25);
+  border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--gap-sm);
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 /* ─── MAP + CONTROLS WRAPPER ─────────────────────────────────────────────────── */
 .map-controls-wrapper {
   position: absolute;
-  right: 1rem;
-  bottom: 1rem;
-  width: 507px;       /* 30% wider than original 390px */
-  height: 390px;      /* original height */
+  right: var(--gap);
+  bottom: var(--gap);
+  width: 507px;  /* original +30% */
+  height: 390px;
   transform-origin: bottom right;
   transition: transform var(--transition);
   z-index: 150;
 }
 .map-controls-wrapper:hover {
-  transform: scale(1.8); /* 80% larger on hover */
+  transform: scale(1.8);
   z-index: 200;
 }
 
@@ -162,59 +174,43 @@ body.dark-mode .game-header {
 .leaflet-map {
   width: 100%;
   height: 100%;
-  opacity: 0.3;                                 /* default low opacity */
+  opacity: 0.3;
   transition: opacity var(--transition);
-  border-radius: 8px;                           /* rounded corners */
-  overflow: hidden;                             /* clip edges */
+  border-radius: var(--radius);
+  overflow: hidden;
 }
-/* On hover of the wrapper, only the map’s opacity changes */
 .map-controls-wrapper:hover .leaflet-map {
-  opacity: 0.9;                                 /* high opacity on hover */
+  opacity: 0.9;
 }
 
-/* ─── CONTROLS ───────────────────────────────────────────────────────────────── */
+/* ─── GUESS/NEXT CONTROLS ───────────────────────────────────────────────────── */
 .controls {
   position: absolute;
   left: 0;
   bottom: 0;
   display: flex;
-  gap: 0.5rem;
-  z-index: 201; /* above the map */
+  gap: var(--gap-sm);
+  z-index: 201;
 }
 
 /* ─── BUTTONS ───────────────────────────────────────────────────────────────── */
 .btn {
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-size: 1rem;
+  padding: var(--btn-padding);
+  border-radius: var(--btn-radius);
+  font-size: var(--font-base);
   cursor: pointer;
   transition: transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
-.btn:active {
-  transform: scale(0.98);
-}
-.btn-primary {
-  background: var(--blue);
-  color: #fff;
-  border: none;
-}
-.btn-secondary {
-  background: #6c757d;
-  color: #fff;
-  border: none;
-}
-.btn-guess {
-  background: var(--blue-75);
-  color: #fff;
-  border: none;
-}
-.btn-next {
-  background: #28a745;
-  color: #fff;
-  border: none;
-}
+.btn:active { transform: scale(0.98); }
+.btn-primary  { background: var(--primary); color: #fff; border: none; }
+.btn-secondary{ background: var(--secondary); color: #fff; border: none; }
+.btn-guess    { background: var(--primary-75); color: #fff; border: none; }
+.btn-next     { background: var(--success); color: #fff; border: none; }
 
-/* ─── ENDGAME OVERLAY ────────────────────────────────────────────────────────── */
+/* ─── ENDGAME OVERLAY & MODAL ───────────────────────────────────────────────── */
 .endgame-overlay {
   position: absolute;
   inset: 0;
@@ -224,51 +220,102 @@ body.dark-mode .game-header {
   justify-content: center;
   z-index: 250;
 }
-.endgame-overlay.hidden {
-  display: none;
-}
-
-/* ─── MODAL ───────────────────────────────────────────────────────────────────── */
+.endgame-overlay.hidden { display: none; }
 .modal {
-  background: var(--light-bg);
+  background: var(--bg-light);
   padding: 2rem;
-  border-radius: 8px;
+  border-radius: var(--radius);
   text-align: center;
   transition: background var(--transition), color var(--transition);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 body.dark-mode .modal {
-  background: var(--dark-bg);
+  background: var(--bg-dark);
   color: var(--text-light);
 }
 
-/* ─── iPHONE LANDSCAPE PHONE MOD ─────────────────────────────────────────────── */
+/* ─── iPHONE LANDSCAPE OVERRIDES ───────────────────────────────────────────── */
 @media only screen and (max-device-width: 812px) and (orientation: landscape) {
-  /* Reflow main menu into a row */
+  :root {
+    --safe-bottom: env(safe-area-inset-bottom, 1rem);
+    --fab-size:    3.5rem;
+    --fab-font:    1rem;
+  }
+
+  /* MENU */
   .menu-screen {
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
+    padding: var(--gap);
+    backdrop-filter: saturate(180%) blur(10px);
+    background: rgba(255,255,255,0.8);
+  }
+  .menu-title { font-size: 2.5rem; flex:1; text-align:center; }
+  .menu-controls { flex-direction: column; gap:0.75rem; }
+
+  /* FABs */
+  #phone-mode-btn,
+  #guess-btn {
+    position: fixed;
+    width: var(--fab-size);
+    height: var(--fab-size);
+    padding: 0;
+    font-size: var(--fab-font);
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    display: flex;
     align-items: center;
-    padding: 1rem;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 1000;
   }
-  /* Tighter but still large title */
-  .menu-title {
-    font-size: 2.5rem;
+  #guess-btn {
+    left: var(--gap);
+    bottom: var(--safe-bottom);
   }
-  /* Stack label + select vertically */
-  .menu-controls {
-    flex-direction: column;
-    gap: 0.75rem;
+  #phone-mode-btn {
+    right: var(--gap);
+    bottom: var(--safe-bottom);
   }
-  /* Thumb-friendly Start button */
-  #start-btn {
-    padding: 1rem 1.5rem;
-    font-size: 1.2rem;
+  #guess-btn:hover,
+  #phone-mode-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.35);
   }
-  /* Make the mini-map fill most of the bottom */
+
+  /* MAP WRAPPER */
   .map-controls-wrapper {
     width: 80vw;
     height: 40vh;
     right: 5vw;
-    bottom: 5vh;
+    bottom: calc(5vh + var(--safe-bottom));
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    border-radius: 0.75rem;
   }
+  .leaflet-map {
+    width: 50%;
+    height: 100%;
+    transition: transform 0.2s;
+  }
+  .leaflet-map:hover {
+    transform: scale(1.1);
+  }
+
+  /* HEADER & STATUS */
+  .game-header { backdrop-filter: blur(6px); }
+  .game-header .title { font-size: 1.3rem; }
+  .status, .timer { font-size: 0.9rem; }
+
+  /* OVERLAYS */
+  .loading-overlay,
+  .endgame-overlay {
+    padding-top: calc(var(--gap)*2);
+    background: rgba(0,0,0,0.85);
+  }
+  .spinner { width:36px; height:36px; border-width:4px; }
+  .modal { padding:1.5rem; border-radius:0.75rem; box-shadow:0 4px 20px rgba(0,0,0,0.4); }
+  .modal .btn { padding:0.75rem 1.25rem; font-size:1.1rem; }
 }
