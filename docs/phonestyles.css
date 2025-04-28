@@ -159,6 +159,11 @@ body {
   border-width: 4px !important;
 }
 
+/* ─── restore .hidden behavior for the menu overlay ────────────────────────── */
+.menu-screen.hidden {
+  display: none !important;
+}
+
 /* ─── GAME-OVER MODAL ──────────────────────────────────────────────────────── */
 .modal {
   padding: 1.5rem !important;
