@@ -79,37 +79,42 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── SETUP LEAFLET ───────────────────────────────────────────────────────────
   function setupLeaflet() {
     if (map) return;
+
     map = L.map('leaflet-map', {
-      center: [31.8, 34.9],
-      zoom:    7,
-      maxBounds: [[-90, -180], [90, 180]],
+      center:       [31.8, 34.9],
+      zoom:          7,
+      maxBounds:    [[-90, -180], [90, 180]],
       maxBoundsViscosity: 1
     });
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
       noWrap:      true
     }).addTo(map);
 
-    // save this handler so we can off() it later
+    // keep a reference so we can turn it off in doGuess()
     mapClickHandler = e => {
       if (!canGuess) return;
       guessBtn.disabled = false;
+
       if (guessMarker) {
         guessMarker.setLatLng(e.latlng);
       } else {
         guessMarker = L.marker(e.latlng, {
           icon: L.icon({
-            iconUrl: './pin-red.png',
-            iconSize: [32,32],
-            iconAnchor: [16,32]
+            iconUrl:    './pin-red.png',
+            iconSize:   [32, 32],
+            iconAnchor: [16, 32]
           }),
           draggable: true
         }).addTo(map);
+        // prevent dragging before guess
         guessMarker.on('dragstart', () => {
           if (!canGuess) guessMarker.dragging.disable();
         });
       }
     };
+
     map.on('click', mapClickHandler);
   }
 
@@ -142,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
     [guessMarker, realMarker, line1, line2].forEach(l => l && map.removeLayer(l));
     guessMarker = realMarker = line1 = line2 = null;
 
-    // re-enable placement
+    // re‐enable placement
     canGuess = true;
     guessBtn.disabled = true;
     map.on('click', mapClickHandler);
@@ -158,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (![ 'All Israel', 'Earth [HARD]' ].includes(gameLogic.region)) {
         const bb = REGION_BBOXES[gameLogic.region];
-        map.fitBounds([[bb.minLat, bb.minLng],[bb.maxLat, bb.maxLng]]);
+        map.fitBounds([[bb.minLat, bb.minLng], [bb.maxLat, bb.maxLng]]);
       }
 
       updateStatus();
@@ -177,14 +182,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!canGuess) return;
     canGuess = false;
 
-    // stop further placement
+    // 1) remove click handler so no more re‐placement
     map.off('click', mapClickHandler);
 
-    // disable Leaflet dragging on that marker
+    // 2) lock down the red marker itself
     if (guessMarker && guessMarker.dragging) {
       guessMarker.dragging.disable();
     }
-    // also disable pointer‐events on its DOM element
+    // 3) block pointer‐events on its element
     const iconEl = guessMarker?.getElement?.();
     if (iconEl) iconEl.style.pointerEvents = 'none';
 
@@ -194,33 +199,33 @@ document.addEventListener('DOMContentLoaded', () => {
       ? guessMarker.getLatLng()
       : map.getCenter();
 
-    // show real location
+    // show real (blue) marker
     realMarker = L.marker(
       [realCoords.lat, realCoords.lng],
       { icon: L.icon({
-          iconUrl: './pin-blue.png',
-          iconSize: [32,32],
-          iconAnchor: [16,32]
+          iconUrl:    './pin-blue.png',
+          iconSize:   [32, 32],
+          iconAnchor: [16, 32]
         })
       }
     ).addTo(map);
 
-    // draw two‐colored line
-    const midLat = (guessLatLng.lat + realCoords.lat)/2;
-    const midLng = (guessLatLng.lng + realCoords.lng)/2;
+    // draw black + orange segments
+    const midLat = (guessLatLng.lat + realCoords.lat) / 2;
+    const midLng = (guessLatLng.lng + realCoords.lng) / 2;
 
     line1 = L.polyline(
-      [[guessLatLng.lat, guessLatLng.lng],[midLat, midLng]],
-      { color:'black', weight:4 }
+      [[guessLatLng.lat, guessLatLng.lng], [midLat, midLng]],
+      { color: 'black', weight: 4 }
     ).addTo(map);
 
     line2 = L.polyline(
-      [[midLat, midLng],[realCoords.lat, realCoords.lng]],
-      { color:'orange', weight:4 }
+      [[midLat, midLng], [realCoords.lat, realCoords.lng]],
+      { color: 'orange', weight: 4 }
     ).addTo(map);
 
-    // score it
-    const { distance, points, score:newScore } = await gameLogic.makeGuess({
+    // score the guess
+    const { distance, points, score: newScore } = await gameLogic.makeGuess({
       lat: guessLatLng.lat,
       lng: guessLatLng.lng
     });
@@ -229,6 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     finalScoreEl.textContent = newScore;
 
     if (round >= TOTAL) {
+      // end‐game
       endOv.classList.remove('hidden');
       controlsEl.classList.add('hidden');
       wrapperEl.classList.add('hidden');
@@ -237,18 +243,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ─── RESTART ────────────────────────────────────────────────────────────────
+  // ─── RESTART (in‐app reset) ─────────────────────────────────────────────────
   document.getElementById('restart-btn')
     .addEventListener('click', () => {
       endOv.classList.add('hidden');
       controlsEl.classList.remove('hidden');
       wrapperEl.classList.remove('hidden');
+
       round = 0;
       score = 0;
       gameLogic.score = 0;
       timeLeft = ROUND_TIME;
       updateStatus();
       finalScoreEl.textContent = '0';
+
       menuScreen.classList.remove('hidden');
       gameContainer.classList.add('hidden');
     });
