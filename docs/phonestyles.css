@@ -2,8 +2,9 @@
    =============================================================================
    Phone Mode Overrides for iPhone Landscape (max-device-width: 812px)
    • Full menu + FAB + mini-map overrides
-   • Mini-map wrapper: 240px wide × 140px tall
-   • Pinned fixed bottom-right, safe-area aware
+   • Mini-map wrapper: 240px wide × 140px tall (absolute pixels)
+   • Fixed to viewport bottom-right, safe-area aware
+   • Polished backdrop-blur, shadows, hover effects, responsive fonts
    ============================================================================= */
 
    :root {
@@ -28,12 +29,17 @@
     and (max-device-width: 812px) 
     and (orientation: landscape) {
   
-    /* safe-area at bottom */
+    /* safe-area padding */
     body {
       padding-bottom: var(--safe-inset-bottom) !important;
     }
   
-    /* reflow main menu */
+    /* hide in-map controls (we use FABs) */
+    .controls {
+      display: none !important;
+    }
+  
+    /* menu reflow */
     .menu-screen {
       display: flex !important;
       flex-direction: row !important;
@@ -62,11 +68,6 @@
       padding: 0.75rem !important;
       font-size: var(--font-header) !important;
       min-width: 6rem !important;
-    }
-  
-    /* hide in‐map controls (we use FAB) */
-    .controls {
-      display: none !important;
     }
   
     /* FAB styling */
@@ -106,7 +107,7 @@
       transform: translateY(-2px) scale(0.98) !important;
     }
   
-    /* mini-map wrapper pinned bottom-right */
+    /* mini-map wrapper pinned */
     .map-controls-wrapper {
       position: fixed !important;
       right: var(--map-offset-x) !important;
@@ -132,6 +133,7 @@
     }
     .leaflet-map:hover {
       transform: scale(1.05) !important;
+      transform-origin: center center !important;
     }
   
     /* header & status */
@@ -159,7 +161,7 @@
       border-width: 4px !important;
     }
   
-    /* game-over modal */
+    /* modal */
     .modal {
       padding: 1.5rem !important;
       border-radius: 0.75rem !important;
