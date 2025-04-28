@@ -1,174 +1,182 @@
 /* phonestyles.css
    =============================================================================
-   Ultra‐polished iPhone Landscape Overrides
-   Applies when Phone Mode is toggled ON (max-device-width: 812px).
-   • Fixed-position FABs (Guess, Phone Mode)
-   • Viewport-bottom-right Leaflet mini-map
-   • Safe-area support, backdrop-blurs, shadows
-   • Smooth hover/active transitions
+   Phone Mode Overrides for iPhone Landscape (max-device-width: 812px)
+   • Safe-area support (home indicator)
+   • Fixed-position FABs (Guess & Phone Mode)
+   • Fixed Leaflet mini-map at viewport bottom-right
+   • Polished backdrop-blur, shadows, hover effects, responsive typography
    ============================================================================= */
 
 /* ─── GLOBAL VARIABLES & SAFE-AREA ───────────────────────────────────────────── */
 :root {
-    /* Safe-area inset (home indicator) */
-    --safe-inset-bottom:    env(safe-area-inset-bottom, 1rem);
-  
-    /* Gaps */
-    --gap-md:               1rem;
-    --gap-sm:               0.75rem;
-  
-    /* Font scales */
-    --font-title:           2.5rem;
-    --font-fab:             1rem;
-    --font-header:          1.3rem;
-    --font-status:          0.9rem;
-  
-    /* FAB dimensions */
-    --fab-size:             3.5rem;
-    --fab-radius:           50%;
-    --fab-shadow:           0 4px 12px rgba(0,0,0,0.3);
-  
-    /* Map wrapper */
-    --map-width:            80vw;
-    --map-height:           40vh;
-    --map-offset-x:         5vw;
-    --map-offset-y:         calc(5vh + var(--safe-inset-bottom));
-  
-    /* Transitions */
-    --trans-fast:           0.2s ease-in-out;
-    --trans-base:           0.3s ease;
+  /* bottom safe-area inset (home indicator) */
+  --safe-inset-bottom:    env(safe-area-inset-bottom, 1rem);
+
+  /* spacing scales */
+  --gap-md:               1rem;
+  --gap-sm:               0.75rem;
+
+  /* font scales */
+  --font-title:           2.5rem;
+  --font-fab:             1rem;
+  --font-header:          1.3rem;
+  --font-status:          0.9rem;
+
+  /* FAB dimensions */
+  --fab-size:             3.5rem;
+  --fab-radius:           50%;
+  --fab-shadow-light:     0 4px 12px rgba(0, 0, 0, 0.3);
+
+  /* map wrapper */
+  --map-width:            80vw;
+  --map-height:           40vh;
+  --map-offset-x:         5vw;
+  --map-offset-y:         calc(5vh + var(--safe-inset-bottom));
+
+  /* transition timing */
+  --trans-fast:           0.2s ease-in-out;
+}
+
+/* ─── PHONE-LANDSCAPE MEDIA QUERY ───────────────────────────────────────────── */
+@media only screen 
+  and (max-device-width: 812px) 
+  and (orientation: landscape) {
+
+  /* ── BODY SAFE-AREA PAD ───────────────────────────────────────────────────── */
+  body {
+    padding-bottom: var(--safe-inset-bottom) !important;
   }
-  
-  /* ─── PHONE-ONLY LANDSCAPE MEDIA QUERY ──────────────────────────────────────── */
-  @media only screen 
-    and (max-device-width: 812px) 
-    and (orientation: landscape) {
-  
-    /* ── SAFE-AREA ON BODY ───────────────────────────────────────────────────── */
-    body {
-      padding-bottom: var(--safe-inset-bottom) !important;
-    }
-  
-    /* ── MENU SCREEN RE-FLOW ─────────────────────────────────────────────────── */
-    .menu-screen {
-      flex-direction: row !important;
-      justify-content: space-between !important;
-      align-items: center !important;
-      padding: var(--gap-md) !important;
-      background: rgba(255,255,255,0.85) !important;
-      backdrop-filter: saturate(180%) blur(8px) !important;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
-      gap: var(--gap-md) !important;
-    }
-    .menu-title {
-      flex: 1 0 auto !important;
-      text-align: center !important;
-      font-size: var(--font-title) !important;
-      margin: 0 !important;
-    }
-    .menu-controls {
-      flex-direction: column !important;
-      gap: var(--gap-sm) !important;
-      align-items: center !important;
-    }
-  
-    /* ── FIXED FAB BUTTONS ───────────────────────────────────────────────────── */
-    #guess-btn,
-    #phone-mode-btn {
-      position: fixed !important;
-      width: var(--fab-size) !important;
-      height: var(--fab-size) !important;
-      padding: 0 !important;
-      font-size: var(--font-fab) !important;
-      border-radius: var(--fab-radius) !important;
-      background: var(--blue) !important;
-      color: #fff !important;
-      box-shadow: var(--fab-shadow) !important;
-      border: none !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      cursor: pointer !important;
-      transition: transform var(--trans-fast), box-shadow var(--trans-fast) !important;
-      z-index: 1000 !important;
-    }
-    #guess-btn {
-      left: var(--gap-md) !important;
-      bottom: var(--safe-inset-bottom) !important;
-    }
-    #phone-mode-btn {
-      right: var(--gap-md) !important;
-      bottom: var(--safe-inset-bottom) !important;
-    }
-    #guess-btn:hover,
-    #phone-mode-btn:hover {
-      transform: translateY(-4px) !important;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.35) !important;
-    }
-    #guess-btn:active,
-    #phone-mode-btn:active {
-      transform: translateY(-2px) scale(0.98) !important;
-    }
-  
-    /* ── FIXED MAP WRAPPER ───────────────────────────────────────────────────── */
-    .map-controls-wrapper {
-      position: fixed !important;
-      right: var(--map-offset-x) !important;
-      bottom: var(--map-offset-y) !important;
-      width: var(--map-width) !important;
-      height: var(--map-height) !important;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
-      border-radius: 0.75rem !important;
-      overflow: hidden !important;
-      backdrop-filter: blur(4px) !important;
-      z-index: 900 !important;
-      transform: none !important;
-    }
-  
-    /* ── MINI-MAP SHRINK & HOVER EFFECT ───────────────────────────────────────── */
-    .leaflet-map {
-      width: 50% !important;
-      height: 100% !important;
-      transition: transform var(--trans-fast) !important;
-    }
-    .leaflet-map:hover {
-      transform: scale(1.1) !important;
-      transform-origin: center center !important;
-    }
-  
-    /* ── HEADER & STATUS TYPOGRAPHY ──────────────────────────────────────────── */
-    .game-header {
-      backdrop-filter: blur(6px) !important;
-      padding: 0.5rem var(--gap-md) !important;
-    }
-    .game-header .title {
-      font-size: var(--font-header) !important;
-    }
-    .status, .timer {
-      font-size: var(--font-status) !important;
-    }
-  
-    /* ── LOADING & ENDGAME OVERLAY ───────────────────────────────────────────── */
-    .loading-overlay,
-    .endgame-overlay {
-      background: rgba(0,0,0,0.85) !important;
-      padding-top: calc(var(--gap-md) * 2) !important;
-      font-size: var(--font-base) !important;
-    }
-    .spinner {
-      width: 36px !important;
-      height: 36px !important;
-      border-width: 4px !important;
-    }
-  
-    /* ── MODAL (GAME OVER) ───────────────────────────────────────────────────── */
-    .modal {
-      padding: 1.5rem !important;
-      border-radius: 0.75rem !important;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
-    }
-    .modal .btn {
-      padding: 0.75rem 1.5rem !important;
-      font-size: 1.1rem !important;
-    }
+
+  /* ── HIDE INLINE CONTROLS ─────────────────────────────────────────────────── */
+  .controls {
+    display: none !important;
   }
+
+  /* ── MENU SCREEN ─────────────────────────────────────────────────────────── */
+  .menu-screen {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: var(--gap-md) !important;
+    backdrop-filter: saturate(180%) blur(8px) !important;
+    background: rgba(255,255,255,0.85) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+    gap: var(--gap-md) !important;
+  }
+  .menu-title {
+    flex: 1 0 auto !important;
+    text-align: center !important;
+    font-size: var(--font-title) !important;
+    margin: 0 !important;
+  }
+  .menu-controls {
+    flex-direction: column !important;
+    gap: var(--gap-sm) !important;
+    align-items: center !important;
+  }
+  .menu-controls select {
+    padding: 0.75rem !important;
+    font-size: var(--font-header) !important;
+    min-width: 6rem !important;
+  }
+
+  /* ── FIXED FAB BUTTONS ───────────────────────────────────────────────────── */
+  #guess-btn,
+  #phone-mode-btn {
+    position: fixed !important;
+    width: var(--fab-size) !important;
+    height: var(--fab-size) !important;
+    padding: 0 !important;
+    font-size: var(--font-fab) !important;
+    background: var(--blue) !important;
+    color: #fff !important;
+    box-shadow: var(--fab-shadow-light) !important;
+    border: none !important;
+    border-radius: var(--fab-radius) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: transform var(--trans-fast), box-shadow var(--trans-fast) !important;
+    z-index: 1000 !important;
+  }
+  #guess-btn {
+    left: var(--gap-md) !important;
+    bottom: var(--safe-inset-bottom) !important;
+  }
+  #phone-mode-btn {
+    right: var(--gap-md) !important;
+    bottom: var(--safe-inset-bottom) !important;
+  }
+  #guess-btn:hover,
+  #phone-mode-btn:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.35) !important;
+  }
+  #guess-btn:active,
+  #phone-mode-btn:active {
+    transform: translateY(-2px) scale(0.98) !important;
+  }
+
+  /* ── FIXED MAP WRAPPER ───────────────────────────────────────────────────── */
+  .map-controls-wrapper {
+    position: fixed !important;
+    right: var(--map-offset-x) !important;
+    bottom: var(--map-offset-y) !important;
+    width: var(--map-width) !important;
+    height: var(--map-height) !important;
+    border-radius: 0.75rem !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
+    backdrop-filter: blur(4px) !important;
+    z-index: 900 !important;
+    transform: none !important;
+  }
+
+  /* ── MINI-MAP HOVER EFFECT ────────────────────────────────────────────────── */
+  .leaflet-map {
+    width: 50% !important;
+    height: 100% !important;
+    transition: transform var(--trans-fast) !important;
+  }
+  .leaflet-map:hover {
+    transform: scale(1.1) !important;
+    transform-origin: center center !important;
+  }
+
+  /* ── HEADER & STATUS ──────────────────────────────────────────────────────── */
+  .game-header {
+    backdrop-filter: blur(6px) !important;
+    padding: 0.5rem var(--gap-md) !important;
+  }
+  .game-header .title {
+    font-size: var(--font-header) !important;
+  }
+  .status, .timer {
+    font-size: var(--font-status) !important;
+  }
+
+  /* ── LOADING & ENDGAME OVERLAY ───────────────────────────────────────────── */
+  .loading-overlay,
+  .endgame-overlay {
+    background: rgba(0,0,0,0.85) !important;
+    padding-top: calc(var(--gap-md)*2) !important;
+    font-size: var(--font-status) !important;
+  }
+  .spinner {
+    width: 36px !important;
+    height: 36px !important;
+    border-width: 4px !important;
+  }
+
+  /* ── MODAL (GAME OVER) ───────────────────────────────────────────────────── */
+  .modal {
+    padding: 1.5rem !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+  }
+  .modal .btn {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 1.1rem !important;
+  }
+}
