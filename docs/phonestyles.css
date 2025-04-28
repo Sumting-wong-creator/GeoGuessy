@@ -1,84 +1,15 @@
 /* phonestyles.css
    =============================================================================
    “Phone Mode” Overrides — mobile-first, loaded only when toggled on
-   • Pixel-perfect 200×150px mini-map in bottom-right
-   • Floating “Guess” & “Phone Mode” FABs always visible
-   • Hides the old in-wrapper controls
-   • Keeps header & overlays legible
+   • Pixel-perfect 200×150 px mini-map in bottom-right
+   • Re-positioned .controls inside wrapper (bottom-left)
+   • Floating Guess FAB at screen bottom-left
    ============================================================================= */
 
-/* ─── SAFE-AREA ─────────────────────────────────────────────────────────────── */
+/* safe-area inset for home indicator */
 :root {
   --safe-bottom: env(safe-area-inset-bottom, 1rem);
 }
-
-/* ─── MAIN MENU OVERLAY ───────────────────────────────────────────────────── */
-.menu-screen {
-  position: fixed !important;
-  inset: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 1rem !important;
-  background: rgba(255,255,255,0.95) !important;
-  backdrop-filter: blur(8px) !important;
-  z-index: 1000 !important;
-}
-.menu-screen.hidden {
-  display: none !important;
-}
-.menu-title {
-  font-size: 2.5rem !important;
-  margin: 0 !important;
-  text-align: center !important;
-}
-.menu-controls {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0.75rem !important;
-  align-items: center !important;
-}
-.menu-controls select {
-  padding: 0.5rem !important;
-  font-size: 1rem !important;
-  min-width: 6rem !important;
-}
-#start-btn {
-  padding: 1rem 1.5rem !important;
-  font-size: 1.2rem !important;
-}
-
-/* ─── HIDE OLD CONTROLS IN THE WRAPPER ─────────────────────────────────────── */
-.controls {
-  display: none !important;
-}
-
-/* ─── FLOATING FAB BUTTONS ────────────────────────────────────────────────── */
-#phone-mode-btn,
-#guess-btn {
-  position: fixed !important;
-  bottom: calc(1rem + var(--safe-bottom)) !important;
-  width: 3.2rem !important;
-  height: 3.2rem !important;
-  border-radius: 50% !important;
-  background: #007bff !important;
-  color: #fff !important;
-  border: none !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
-  cursor: pointer !important;
-  z-index: 1002 !important;
-  transition: transform 0.2s !important;
-}
-#phone-mode-btn:hover,
-#guess-btn:hover {
-  transform: translateY(-3px) !important;
-}
-#phone-mode-btn { right: 1rem !important; }
-#guess-btn       { left:  1rem !important; }
 
 /* ─── MINI-MAP WRAPPER ─────────────────────────────────────────────────────── */
 .map-controls-wrapper {
@@ -93,15 +24,74 @@
   box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
   z-index: 900 !important;
 }
+
+/* stretch the leaflet map to fill its container */
 .leaflet-map {
   width: 100% !important;
   height: 100% !important;
-  transition: none !important;
+}
+
+/* ─── RE-POSITION “Guess” & “Next” INSIDE wrapper ───────────────────────────── */
+.map-controls-wrapper .controls {
+  position: absolute !important;
+  left: 0 !important;
+  bottom: 0 !important;
+  display: flex !important;
+  gap: 0.5rem !important;
+  padding: 0.5rem !important;
+  z-index: 901 !important;
+}
+
+/* ensure Guess button is always visible */
+#guess-btn {
+  display: inline-flex !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* ─── FLOATING GUESS FAB (fallback) ───────────────────────────────────────── */
+#guess-btn.floating {
+  position: fixed !important;
+  left: 1rem !important;
+  bottom: calc(1rem + var(--safe-bottom)) !important;
+  width: 3.2rem !important;
+  height: 3.2rem !important;
+  border-radius: 50% !important;
+  background: #007bff !important;
+  color: #fff !important;
+  border: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+  z-index: 1002 !important;
+}
+
+/* ─── FLOATING PHONE MODE FAB ──────────────────────────────────────────────── */
+#phone-mode-btn {
+  position: fixed !important;
+  right: 1rem !important;
+  bottom: calc(1rem + var(--safe-bottom)) !important;
+  width: 3.2rem !important;
+  height: 3.2rem !important;
+  border-radius: 50% !important;
+  background: #6c757d !important;
+  color: #fff !important;
+  border: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+  z-index: 1002 !important;
+}
+
+/* hover lift effect */
+#phone-mode-btn:hover,
+#guess-btn:hover {
+  transform: translateY(-3px) !important;
 }
 
 /* ─── HIDE ATTRIBUTION ─────────────────────────────────────────────────────── */
-.leaflet-control‐attribution,
-.leaflet-control‐container .leaflet-control‐attribution {
+.leaflet-control-attribution,
+.leaflet-control-container .leaflet-control-attribution {
   display: none !important;
 }
 
