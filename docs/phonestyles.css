@@ -1,10 +1,10 @@
 /* phonestyles.css
    =============================================================================
    “Phone Mode” Overrides — mobile-first, loaded only when toggled on
-   • Pixel-perfect mini-map in bottom-right
-   • Floating “Guess” & “Next Round” FABs
-   • Floating “Phone Mode” FAB
-   • Hides in-map controls & attribution
+   • Pixel-perfect 200×150px mini-map in bottom-right
+   • Floating “Guess” & “Phone Mode” FABs always visible
+   • Hides the old in-wrapper controls
+   • Keeps header & overlays legible
    ============================================================================= */
 
 /* ─── SAFE-AREA ─────────────────────────────────────────────────────────────── */
@@ -12,7 +12,7 @@
   --safe-bottom: env(safe-area-inset-bottom, 1rem);
 }
 
-/* ─── MAIN MENU OVERLAY ────────────────────────────────────────────────────── */
+/* ─── MAIN MENU OVERLAY ───────────────────────────────────────────────────── */
 .menu-screen {
   position: fixed !important;
   inset: 0 !important;
@@ -49,15 +49,14 @@
   font-size: 1.2rem !important;
 }
 
-/* ─── HIDE IN-MAP BUTTONS ──────────────────────────────────────────────────── */
-.map-controls-wrapper .controls {
+/* ─── HIDE OLD CONTROLS IN THE WRAPPER ─────────────────────────────────────── */
+.controls {
   display: none !important;
 }
 
-/* ─── FLOATING FABs ────────────────────────────────────────────────────────── */
+/* ─── FLOATING FAB BUTTONS ────────────────────────────────────────────────── */
 #phone-mode-btn,
-#guess-btn,
-#next-btn {
+#guess-btn {
   position: fixed !important;
   bottom: calc(1rem + var(--safe-bottom)) !important;
   width: 3.2rem !important;
@@ -71,32 +70,15 @@
   justify-content: center !important;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
   cursor: pointer !important;
-  z-index: 1001 !important;
+  z-index: 1002 !important;
   transition: transform 0.2s !important;
 }
 #phone-mode-btn:hover,
-#guess-btn:hover,
-#next-btn:hover {
+#guess-btn:hover {
   transform: translateY(-3px) !important;
 }
-
-/* positions */
 #phone-mode-btn { right: 1rem !important; }
 #guess-btn       { left:  1rem !important; }
-/* place Next between them */
-#next-btn {
-  left: calc(50% - 1.6rem) !important;  /* center horizontally */
-  background: #28a745 !important;
-}
-
-/* restore readable label */
-#next-btn {
-  width: auto !important;
-  padding: 0.6rem 1rem !important;
-  font-size: 0.9rem !important;
-  border-radius: 1.5rem !important;
-  height: auto !important;
-}
 
 /* ─── MINI-MAP WRAPPER ─────────────────────────────────────────────────────── */
 .map-controls-wrapper {
@@ -118,8 +100,8 @@
 }
 
 /* ─── HIDE ATTRIBUTION ─────────────────────────────────────────────────────── */
-.leaflet-control-attribution,
-.leaflet-control-container .leaflet-control-attribution {
+.leaflet-control‐attribution,
+.leaflet-control‐container .leaflet-control‐attribution {
   display: none !important;
 }
 
