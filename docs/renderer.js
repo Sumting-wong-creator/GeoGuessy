@@ -1,7 +1,7 @@
 // src/renderer/renderer.js
 
 import { mapillaryService, REGION_BBOXES } from './services/mapillary.js';
-import { gameLogic                           } from './services/game-logic.js';
+import { gameLogic                          } from './services/game-logic.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // ─── ELEMENT REFERENCES ───────────────────────────────────────────────────────
@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     round = 0;
     score = 0;
     gameLogic.score = 0;
+    timeLeft = ROUND_TIME;
     updateStatus();
     finalScoreEl.textContent = '0';
 
@@ -65,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     endOv.classList.add('hidden');
     controlsEl.classList.remove('hidden');
     wrapperEl.classList.remove('hidden');
+
     setupLeaflet();
     await gameLogic.initialize();
     await nextRound();
@@ -79,26 +81,30 @@ document.addEventListener('DOMContentLoaded', () => {
     if (map) return;
     map = L.map('leaflet-map', {
       center: [31.8, 34.9],
-      zoom:    7,
+      zoom: 7,
       maxBounds: [[-90, -180], [90, 180]],
       maxBoundsViscosity: 1
     });
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
-      noWrap:      true
+      noWrap: true
     }).addTo(map);
 
     map.on('click', e => {
       if (!canGuess) return;
       guessBtn.disabled = false;
+      // ensure visible even when disabled
+      guessBtn.style.opacity = '1';
+      guessBtn.style.pointerEvents = 'auto';
+
       if (guessMarker) {
         guessMarker.setLatLng(e.latlng);
       } else {
         guessMarker = L.marker(e.latlng, {
           icon: L.icon({
             iconUrl: './pin-red.png',
-            iconSize: [32,32],
-            iconAnchor: [16,32]
+            iconSize: [32, 32],
+            iconAnchor: [16, 32]
           }),
           draggable: true
         }).addTo(map);
@@ -138,7 +144,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // clear previous markers/lines
     [guessMarker, realMarker, line1, line2].forEach(l => l && map.removeLayer(l));
     guessMarker = realMarker = line1 = line2 = null;
+
+    // reset Guess button
     guessBtn.disabled = true;
+    guessBtn.style.opacity = '1';
+    guessBtn.style.pointerEvents = 'auto';
+
     nextBtn.classList.add('hidden');
     canGuess = true;
 
@@ -154,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const bb = REGION_BBOXES[gameLogic.region];
         map.fitBounds([[bb.minLat, bb.minLng], [bb.maxLat, bb.maxLng]]);
       }
+
       updateStatus();
       if (!viewer) {
         viewer = await mapillaryService.initialize('mapillary-viewer', loc.id);
@@ -179,7 +191,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // show real marker
     realMarker = L.marker(
       [realCoords.lat, realCoords.lng],
-      { icon: L.icon({ iconUrl: './pin-blue.png', iconSize: [32,32], iconAnchor: [16,32] }) }
+      {
+        icon: L.icon({
+          iconUrl: './pin-blue.png',
+          iconSize: [32, 32],
+          iconAnchor: [16, 32]
+        })
+      }
     ).addTo(map);
 
     // midpoint
@@ -227,15 +245,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── RESTART (in-app reset) ─────────────────────────────────────────────────
   document.getElementById('restart-btn')
     .addEventListener('click', () => {
-      // hide overlays
-      endOv.classList.add('hidden');
+      // show map controls again
       controlsEl.classList.remove('hidden');
       wrapperEl.classList.remove('hidden');
+
+      // hide endgame overlay
+      endOv.classList.add('hidden');
 
       // reset state
       round = 0;
       score = 0;
       gameLogic.score = 0;
+      timeLeft = ROUND_TIME;
       updateStatus();
       finalScoreEl.textContent = '0';
 
