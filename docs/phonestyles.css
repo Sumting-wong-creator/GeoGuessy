@@ -1,7 +1,7 @@
 /* phonestyles.css
    ─────────────────────────────────────────────────────────────────────────────
    Overrides for iPhone landscape phone mode.
-   This file is loaded when “Phone Mode” is toggled on.
+   This file is loaded when “Phone Layout” is toggled on.
    Triple-checked for iPhone X/11/12/13/14 landscape (max-device-width: 812px).
 */
 
@@ -16,8 +16,6 @@
     --phone-map-offset-x:    5vw;
     --phone-map-offset-y:    5vh;
     --phone-control-gap:     0.5rem;
-    --phone-control-bottom:  calc(var(--phone-map-offset-y) + 1rem);
-    --phone-control-left:    var(--phone-map-offset-x);
     --phone-header-font:     1.3rem;
     --phone-status-font:     0.9rem;
   }
@@ -50,40 +48,50 @@
       font-size: var(--phone-btn-font) !important;
     }
   
+    /* PHONE MODE BUTTON: fixed bottom‐right of viewport */
+    #phone-mode-btn {
+      position: fixed !important;
+      bottom: 1rem !important;
+      right: 1rem !important;
+      z-index: 1000 !important;
+    }
+  
     /* MAP CONTROLS WRAPPER (LEAFLET CONTAINER) */
     .map-controls-wrapper {
       width: var(--phone-map-width) !important;
       height: var(--phone-map-height) !important;
       right: var(--phone-map-offset-x) !important;
       bottom: var(--phone-map-offset-y) !important;
-      transform: none !important; /* disable hover-scale on wrapper */
+      transform: none !important;
     }
   
-    /* ─── SHRINK LEAFLET MAP HORIZONTALLY & HOVER-TO-ENLARGE ───────────────── */
+    /* SHRINK & HOVER-TO-ENLARGE LEAFLET MAP */
     .leaflet-map {
-      width: 50% !important;                              /* half the container’s width */
+      width: 50% !important;           /* half container width */
       height: 100% !important;
       transition: transform 0.2s ease-in-out !important;
       border-radius: 12px !important;
       opacity: 0.8 !important;
     }
     .leaflet-map:hover {
-      transform: scale(1.2) !important;                   /* enlarge by 20% on hover */
+      transform: scale(1.2) !important; /* grow by 20% */
       transform-origin: center center !important;
     }
   
-    /* GUESS/NEXT CONTROLS POSITION */
+    /* GUESS BUTTON: bottom‐left of leaflet container */
     .controls {
-      left: var(--phone-control-left) !important;
-      bottom: var(--phone-control-bottom) !important;
+      position: absolute !important;
+      left: 0 !important;
+      bottom: 0 !important;
       gap: var(--phone-control-gap) !important;
+      z-index: 900 !important;
     }
     .controls .btn {
       padding: 0.75rem !important;
       font-size: 1.1rem !important;
     }
   
-    /* HEADER TEXT SIZING */
+    /* GAME HEADER ADJUSTMENTS */
     .game-header .title {
       font-size: var(--phone-header-font) !important;
     }
@@ -91,7 +99,7 @@
       font-size: var(--phone-status-font) !important;
     }
   
-    /* LOADING & ENDGAME OVERLAY TWEAKS */
+    /* LOADING & ENDGAME OVERLAY */
     .loading-overlay,
     .endgame-overlay {
       inset: 0 !important;
