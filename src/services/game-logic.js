@@ -7,15 +7,15 @@ import { serviceContainer } from './container.js';
  * Earth [HARD]: 1 point lost per 400 000 m ⇒ 0.0000025 pts/m
  */
 const REGION_MULTIPLIERS_PER_M = {
-  'All Israel':      0.014,
+  'All Israel':      0.00014,
   'Alonei Abba':     2,
-  'Eilat':           1.2,
-  'Herzeliya':       2.2,
-  'Raanana':         2.4,
-  'Ramat Aviv':      2.6,
-  'Ramat HaSharon':  2.5,
-  'Tel Aviv':        2,
-  'Earth [HARD]':    0.0000025
+  'Eilat':           0.2,
+  'Herzeliya':       0.2,
+  'Raanana':         0.4,
+  'Ramat Aviv':      0.6,
+  'Ramat HaSharon':  0.5,
+  'Tel Aviv':        0.4,
+  'Earth [HARD]':    0.0000000025
 };
 
 /**
